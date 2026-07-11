@@ -85,7 +85,15 @@ export default function Home() {
             <a className="button button-primary" href={releasesUrl}>Download for macOS <span>↗</span></a>
             <a className="button button-secondary" href={githubUrl}>View on GitHub <span>↗</span></a>
           </div>
-          <p className="hero-note">Built on the open-source Codex app-server · Self-hostable relay</p>
+          <div className="hero-requirements" aria-label="Account requirements">
+            <div><strong>Host a room</strong><span>Codex account + active subscription required</span></div>
+            <div><strong>Sign in</strong><span>GitHub account required</span></div>
+          </div>
+          <p className="hero-note">Built on the open-source Codex app-server · Self-hostable relay · Made by <a href="https://x.com/maddiedreese">@maddiedreese ↗</a></p>
+          <aside className="hero-disclaimer">
+            <strong>Independent open-source project</strong>
+            <span>multAIplayer is an independent open-source project and is not affiliated with, endorsed by, or sponsored by OpenAI. The OpenAI and Codex names belong to OpenAI.</span>
+          </aside>
         </div>
 
         <div className="hero-stage" aria-label="multAIplayer desktop app preview">
@@ -224,13 +232,15 @@ export default function Home() {
         <h2>Bring the whole team<br />into the loop.</h2>
         <p>Download the macOS alpha and start a room around your next build.</p>
         <a className="button button-primary button-large" href={releasesUrl}>Download for macOS <span>↗</span></a>
-        <small>Completely free and open source · Manual updates during alpha</small>
+        <small>Completely free and open source · GitHub account required to sign in</small>
+        <small>Hosting requires a Codex account with an active subscription</small>
       </section>
 
       <footer>
         <div className="footer-brand">
           <a className="wordmark" href="#top"><Image src="/brand/icon.png" alt="" width={34} height={34} /><span><strong>multAIplayer</strong><small>group chat for Codex</small></span></a>
           <p>Build with Codex. Together.</p>
+          <p>Made by <a href="https://x.com/maddiedreese">@maddiedreese ↗</a></p>
         </div>
         <div className="footer-links">
           <div><strong>Product</strong><a href="#how-it-works">How it works</a><a href={releasesUrl}>Download</a><a href="#privacy">Privacy</a></div>
