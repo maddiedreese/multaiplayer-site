@@ -28,3 +28,5 @@ npm run release:manifest
 ```
 
 Use `--dry-run` to print the manifest without writing it.
+The scheduled workflow also uses `--allow-missing`, which leaves the launch placeholder intact until the first GitHub Release exists.
+To trigger the desktop app’s stronger security-update banner, prefix the release name with `[Security]` or add `Security update: true` on its own line in the release body.

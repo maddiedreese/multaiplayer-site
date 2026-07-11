@@ -22,7 +22,7 @@ export function manifestFromReleases(releases) {
     version,
     url: release.html_url,
     notes,
-    security: /\bsecurity\b/i.test(`${release.name ?? ""}\n${body}`),
+    security: /^\[security\]/i.test(String(release.name ?? "").trim()) || /(?:^|\n)Security update:\s*(?:true|yes)(?:\n|$)/i.test(body),
   };
 }
 
@@ -42,7 +42,16 @@ export async function fetchManifest(fetchImpl = fetch) {
 }
 
 async function main() {
-  const manifest = await fetchManifest();
+  let manifest;
+  try {
+    manifest = await fetchManifest();
+  } catch (error) {
+    if (process.argv.includes("--allow-missing") && error instanceof Error && /No published GitHub Release/.test(error.message)) {
+      console.log("No published app release exists yet; keeping the launch placeholder manifest.");
+      return;
+    }
+    throw error;
+  }
   const serialized = `${JSON.stringify(manifest, null, 2)}\n`;
   if (process.argv.includes("--dry-run")) {
     process.stdout.write(serialized);

@@ -27,11 +27,22 @@ test("marks security releases from release copy", () => {
   const manifest = manifestFromReleases([{
     draft: false,
     tag_name: "v0.1.1-alpha.0",
-    name: "Security update",
-    body: "Strengthens room trust handling.",
+    name: "Room trust update",
+    body: "Strengthens room trust handling.\n\nSecurity update: true",
     html_url: "https://example.com/release",
   }]);
   assert.equal(manifest.security, true);
+});
+
+test("does not mark ordinary releases that discuss security", () => {
+  const manifest = manifestFromReleases([{
+    draft: false,
+    tag_name: "v0.1.0-alpha.0",
+    name: "Public alpha",
+    body: "Treat this as security-sensitive alpha software.",
+    html_url: "https://example.com/release",
+  }]);
+  assert.equal(manifest.security, false);
 });
 
 test("rejects missing and malformed release tags", () => {
