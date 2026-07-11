@@ -48,7 +48,7 @@ const faqs = [
   },
   {
     q: "What platforms are supported?",
-    a: "The first public alpha is for macOS. Public downloads are distributed as Developer ID signed and notarized builds.",
+    a: "The first public alpha supports macOS. Additional platforms are not available yet.",
   },
   {
     q: "Is it ready for sensitive production work?",
@@ -77,16 +77,15 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <div className="eyebrow"><span className="live-dot" /> Public alpha · macOS</div>
           <h1>Build with Codex.<br /><span>Together.</span></h1>
           <p className="hero-lede">
-            A private team room for the conversation, code, tools, and decisions around a shared Codex session.
+            A completely free, open-source team room for the conversation, code, tools, and decisions around a shared Codex session.
           </p>
           <div className="hero-actions">
             <a className="button button-primary" href={releasesUrl}>Download for macOS <span>↗</span></a>
             <a className="button button-secondary" href={githubUrl}>View on GitHub <span>↗</span></a>
           </div>
-          <p className="hero-note">Signed &amp; notarized · Open source · Self-hostable relay</p>
+          <p className="hero-note">Built on the open-source Codex app-server · Self-hostable relay</p>
         </div>
 
         <div className="hero-stage" aria-label="multAIplayer desktop app preview">
@@ -109,10 +108,6 @@ export default function Home() {
           <div className="floating-card host-card"><span>Active host</span><strong>Maddie</strong><i>approved</i></div>
           <div className="floating-card event-card"><span className="bot-mark">✣</span><div><strong>Codex is working</strong><small>3 teammates following</small></div></div>
         </div>
-      </section>
-
-      <section className="signal-strip" aria-label="Product highlights">
-        <span>Encrypted rooms</span><i>◆</i><span>Host-approved tools</span><i>◆</i><span>Local Codex</span><i>◆</i><span>GitHub workflow</span><i>◆</i><span>Open source</span>
       </section>
 
       <section className="intro section-light" id="how-it-works">
@@ -146,7 +141,7 @@ export default function Home() {
               src="/product/multaiplayer-light.jpg"
               alt="The current multAIplayer light interface with room tools, team chat, files, and GitHub workflow context"
               width={1440}
-              height={822}
+              height={860}
               sizes="(max-width: 1050px) 94vw, 54vw"
             />
           </div>
@@ -173,17 +168,19 @@ export default function Home() {
           </ul>
           <a className="text-link" href={`${githubUrl}/blob/main/docs/threat-model.md`}>Read the threat model <span>↗</span></a>
         </div>
-        <div className="privacy-diagram" aria-label="Encrypted relay architecture diagram">
-          <div className="diagram-label">ROOM TRAFFIC</div>
-          <div className="device-node device-one"><div>M</div><strong>Maddie</strong><small>active host</small></div>
-          <div className="device-node device-two"><div>S</div><strong>Sam</strong><small>teammate</small></div>
-          <div className="device-node device-three"><div>P</div><strong>Priya</strong><small>teammate</small></div>
-          <div className="relay-node"><span>◈</span><strong>relay</strong><small>ciphertext + routing metadata</small></div>
-          <div className="route route-a"><i /><i /><i /></div>
-          <div className="route route-b"><i /><i /><i /></div>
-          <div className="route route-c"><i /><i /><i /></div>
+        <div className="privacy-visual">
+          <div className="privacy-diagram" aria-label="Encrypted relay architecture diagram">
+            <div className="diagram-label">ROOM TRAFFIC</div>
+            <div className="device-node device-one"><div>M</div><strong>Maddie</strong><small>active host</small></div>
+            <div className="device-node device-two"><div>S</div><strong>Sam</strong><small>teammate</small></div>
+            <div className="device-node device-three"><div>P</div><strong>Priya</strong><small>teammate</small></div>
+            <div className="relay-node"><span>◈</span><strong>relay</strong><small>ciphertext + routing metadata</small></div>
+            <div className="route route-a"><i /><i /><i /></div>
+            <div className="route route-b"><i /><i /><i /></div>
+            <div className="route route-c"><i /><i /><i /></div>
+            <p>Plaintext stays on participating devices</p>
+          </div>
           <div className="local-boundary"><span>HOST MACHINE</span><div>Project</div><div>Codex</div><div>Terminal</div><div>Browser</div></div>
-          <p>Plaintext stays on participating devices</p>
         </div>
       </section>
 
@@ -227,7 +224,7 @@ export default function Home() {
         <h2>Bring the whole team<br />into the loop.</h2>
         <p>Download the macOS alpha and start a room around your next build.</p>
         <a className="button button-primary button-large" href={releasesUrl}>Download for macOS <span>↗</span></a>
-        <small>Developer ID signed and notarized · Manual updates during alpha</small>
+        <small>Completely free and open source · Manual updates during alpha</small>
       </section>
 
       <footer>
@@ -240,6 +237,7 @@ export default function Home() {
           <div><strong>Project</strong><a href={githubUrl}>GitHub</a><a href={`${githubUrl}/blob/main/docs/using-the-app.md`}>Documentation</a><a href={`${githubUrl}/issues`}>Issues</a></div>
           <div><strong>Trust</strong><a href={`${githubUrl}/blob/main/SECURITY.md`}>Security</a><a href={`${githubUrl}/blob/main/docs/alpha-limitations.md`}>Alpha limitations</a><a href={`${githubUrl}/blob/main/LICENSE`}>License</a></div>
         </div>
+        <p className="independence-note">multAIplayer is an independent open-source project and is not affiliated with, endorsed by, or sponsored by OpenAI. The OpenAI and Codex names belong to OpenAI.</p>
         <div className="footer-bottom"><span>© {new Date().getFullYear()} multAIplayer</span><span>Open source under Apache-2.0</span><span className="footer-status"><i /> Public alpha</span></div>
       </footer>
     </main>
