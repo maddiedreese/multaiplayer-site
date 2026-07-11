@@ -35,12 +35,16 @@ const trustItems = [
 
 const faqs = [
   {
-    q: "Does multAIplayer replace Codex?",
-    a: "No. It gives a team a shared room around the active host’s local Codex session. Each host uses their own Codex access and local project folder.",
+    q: "What accounts do I need?",
+    a: "A GitHub account is required to sign in. To host a room, you also need a ChatGPT account with Codex access and an active plan or subscription. multAIplayer uses the host’s local Codex session, so no separate OpenAI API key is required.",
   },
   {
-    q: "Do I need an OpenAI API key?",
-    a: "No project-owned API key is required. multAIplayer connects to the active host’s local Codex app-server and does not proxy or store Codex credentials.",
+    q: "Is multAIplayer an OpenAI or Codex product?",
+    a: "No. multAIplayer is an independent open-source project and is not affiliated with, endorsed by, or sponsored by OpenAI. The OpenAI and Codex names belong to OpenAI.",
+  },
+  {
+    q: "Is multAIplayer free and open source?",
+    a: "Yes. The multAIplayer desktop app and self-hostable relay are completely free and open source under the Apache-2.0 license. A separate paid ChatGPT plan or subscription may still be required for a host’s Codex access.",
   },
   {
     q: "Can I self-host the relay?",
