@@ -30,7 +30,7 @@ const trustItems = [
   "Room messages and attachments are encrypted before they reach the relay.",
   "Codex and OpenAI credentials stay on the active host’s machine.",
   "Project files, terminal output, and browser contents are not stored as relay plaintext.",
-  "Terminal, browser, file-write, Git, and Codex actions stay behind host approval.",
+  "Local actions remain governed by the active host’s approval settings and native safety controls.",
 ];
 
 const faqs = [
@@ -57,6 +57,10 @@ const faqs = [
   {
     q: "Is it ready for sensitive production work?",
     a: "Not yet. This is a public alpha. Teams should review the threat model and known limitations before using private, regulated, or high-stakes projects.",
+  },
+  {
+    q: "Who maintains multAIplayer and the hosted relay?",
+    a: "multAIplayer is currently maintained by one person. Releases, security fixes, compatibility, and continued operation of the hosted relay are not guaranteed, so keep normal project and Git backups and review the project’s continuity guidance before depending on the alpha for important work.",
   },
 ];
 
@@ -175,10 +179,14 @@ export default function Home() {
           <div className="section-kicker"><span>03</span> Private by design</div>
           <h2>Your relay moves the room.<br />It doesn’t read the work.</h2>
           <p>Room content is encrypted on devices. Powerful local capabilities remain with the host who owns the machine, project, accounts, and approvals.</p>
+          <p>The custom cryptographic protocol is unaudited. End-to-end encryption is the intended, tested design boundary—not an independently verified guarantee.</p>
           <ul>
             {trustItems.map((item) => <li key={item}><span>✓</span>{item}</li>)}
           </ul>
-          <a className="text-link" href={`${githubUrl}/blob/main/docs/threat-model.md`}>Read the threat model <span>↗</span></a>
+          <div className="trust-links">
+            <a className="text-link" href={`${githubUrl}/blob/main/docs/threat-model.md`}>Read the threat model <span>↗</span></a>
+            <a className="text-link" href={`${githubUrl}/blob/main/docs/external-review-packet.md`}>External review packet <span>↗</span></a>
+          </div>
         </div>
         <div className="privacy-visual">
           <div className="privacy-diagram" aria-label="Encrypted relay architecture diagram">
@@ -249,7 +257,7 @@ export default function Home() {
         <div className="footer-links">
           <div><strong>Product</strong><a href="#how-it-works">How it works</a><a href={releasesUrl}>Download</a><a href="#privacy">Privacy</a></div>
           <div><strong>Project</strong><a href={githubUrl}>GitHub</a><a href={`${githubUrl}/blob/main/docs/using-the-app.md`}>Documentation</a><a href={`${githubUrl}/issues`}>Issues</a></div>
-          <div><strong>Trust</strong><a href={`${githubUrl}/blob/main/SECURITY.md`}>Security</a><a href={`${githubUrl}/blob/main/docs/alpha-limitations.md`}>Alpha limitations</a><a href={`${githubUrl}/blob/main/LICENSE`}>License</a></div>
+          <div><strong>Trust</strong><a href={`${githubUrl}/blob/main/SECURITY.md`}>Security</a><a href={`${githubUrl}/blob/main/docs/alpha-limitations.md`}>Alpha limitations</a><a href={`${githubUrl}/blob/main/docs/if-unmaintained.md`}>Project continuity</a><a href={`${githubUrl}/blob/main/LICENSE`}>License</a></div>
         </div>
         <p className="independence-note">multAIplayer is an independent open-source project and is not affiliated with, endorsed by, or sponsored by OpenAI. The OpenAI and Codex names belong to OpenAI.</p>
         <div className="footer-bottom"><span>© {new Date().getFullYear()} multAIplayer</span><span>Open source under Apache-2.0</span><span className="footer-status"><i /> Public alpha</span></div>

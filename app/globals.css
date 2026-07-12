@@ -137,6 +137,7 @@ h1, h2, h3, p { margin-top: 0; }
 .privacy ul { margin: 36px 0 30px; padding: 0; list-style: none; border-top: 1px solid var(--line); }
 .privacy li { padding: 15px 0; display:flex;gap:12px;border-bottom:1px solid var(--line);color:#4f4c45;font-size:13px;line-height:1.45}.privacy li span{color:#736a49;font-weight:800}
 .text-link { display:inline-flex;gap:12px;padding-bottom:5px;border-bottom:1px solid #908a7e;font-size:12px;font-weight:700 }
+.trust-links { display:flex;flex-wrap:wrap;gap:16px 24px }
 .privacy-visual { width:min(100%, 680px); margin:0 auto; }
 .privacy-diagram { position: relative; width:100%; aspect-ratio:1; border: 1px solid #cbc6bb; border-radius: 50%; background: radial-gradient(circle at center, #ebe5d7, transparent 61%); }
 .diagram-label { position:absolute;left:50%;top:7%;transform:translateX(-50%);color:#8a857b;font-size:8px;letter-spacing:.16em; }
