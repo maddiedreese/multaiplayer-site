@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const githubUrl = "https://github.com/maddiedreese/multAIplayer";
 const releasesUrl = `${githubUrl}/releases`;
@@ -79,6 +80,7 @@ export default function Home() {
           <a href="#how-it-works">How it works</a>
           <a href="#privacy">Privacy</a>
           <a href="#open-source">Open source</a>
+          <Link href="/faq">FAQ</Link>
         </nav>
         <a className="header-cta" href={releasesUrl}>Download alpha</a>
       </header>
@@ -130,7 +132,7 @@ export default function Home() {
         <div className="section-kicker"><span>01</span> One room, shared momentum</div>
         <div className="intro-heading">
           <h2>Pair programming grew up.<br />Now it has a whole team.</h2>
-          <p>multAIplayer keeps the people and the agent in the same loop—without turning your local machine into an invisible shared service.</p>
+          <p>multAIplayer keeps the people and the agent in the same loop without turning your local machine into an invisible shared service.</p>
         </div>
 
         <div className="feature-grid">
@@ -179,7 +181,7 @@ export default function Home() {
           <div className="section-kicker"><span>03</span> Private by design</div>
           <h2>Your relay moves the room.<br />It doesn’t read the work.</h2>
           <p>Room content is encrypted on devices. Powerful local capabilities remain with the host who owns the machine, project, accounts, and approvals.</p>
-          <p>The custom cryptographic protocol is unaudited. End-to-end encryption is the intended, tested design boundary—not an independently verified guarantee.</p>
+          <p>The custom cryptographic protocol is unaudited. End-to-end encryption is the intended, tested design boundary, not an independently verified guarantee.</p>
           <ul>
             {trustItems.map((item) => <li key={item}><span>✓</span>{item}</li>)}
           </ul>
@@ -233,6 +235,7 @@ export default function Home() {
                 <p>{faq.a}</p>
               </details>
             ))}
+            <Link className="faq-more" href="/faq">Read the complete FAQ <span>↗</span></Link>
           </div>
         </div>
       </section>
@@ -255,7 +258,7 @@ export default function Home() {
           <p>Made by <a href="https://x.com/maddiedreese">@maddiedreese ↗</a></p>
         </div>
         <div className="footer-links">
-          <div><strong>Product</strong><a href="#how-it-works">How it works</a><a href={releasesUrl}>Download</a><a href="#privacy">Privacy</a></div>
+          <div><strong>Product</strong><a href="#how-it-works">How it works</a><Link href="/faq">FAQ</Link><a href={releasesUrl}>Download</a><a href="#privacy">Privacy</a></div>
           <div><strong>Project</strong><a href={githubUrl}>GitHub</a><a href={`${githubUrl}/blob/main/docs/using-the-app.md`}>Documentation</a><a href={`${githubUrl}/issues`}>Issues</a></div>
           <div><strong>Trust</strong><a href={`${githubUrl}/blob/main/SECURITY.md`}>Security</a><a href={`${githubUrl}/blob/main/docs/alpha-limitations.md`}>Alpha limitations</a><a href={`${githubUrl}/blob/main/docs/if-unmaintained.md`}>Project continuity</a><a href={`${githubUrl}/blob/main/LICENSE`}>License</a></div>
         </div>
