@@ -1,6 +1,6 @@
 import manifestJson from "../public/releases/latest.json";
 
-interface MacDownload {
+interface ManifestMacDownload {
   url: string;
   name: string;
   architecture: "arm64";
@@ -13,11 +13,11 @@ interface ReleaseManifest {
   notes: string;
   security: boolean;
   supported: boolean;
-  downloads: { macos?: MacDownload };
+  downloads: { macos?: ManifestMacDownload };
 }
 
 export const releaseManifest = manifestJson as ReleaseManifest;
 export const supportedMacDownload =
   releaseManifest.supported && releaseManifest.downloads.macos?.architecture === "arm64"
-    ? releaseManifest.downloads.macos
+    ? { ...releaseManifest.downloads.macos, version: releaseManifest.version }
     : null;

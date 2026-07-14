@@ -1,7 +1,7 @@
 {
-  "version": "0.1.0-alpha.0",
-  "url": "https://github.com/maddiedreese/multAIplayer/releases/tag/v0.1.0-alpha.0",
-  "notes": "First public alpha scaffold for multAIplayer.",
+  "version": "0.0.0",
+  "url": "https://multaiplayer.com",
+  "notes": "No supported desktop release has been published.",
   "security": false,
   "supported": false,
   "downloads": {}

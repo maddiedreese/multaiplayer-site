@@ -42,7 +42,7 @@ test("selects the newest non-draft release, including prereleases", () => {
   });
 });
 
-test("does not publish an incomplete or unsigned scaffold as a supported download", () => {
+test("does not publish an incomplete artifact set or imply that it was a supported release", () => {
   const manifest = manifestFromReleases([{
     draft: false,
     tag_name: "v0.1.0-alpha.0",
@@ -52,9 +52,9 @@ test("does not publish an incomplete or unsigned scaffold as a supported downloa
     assets: [diskImage],
   }]);
   assert.deepEqual(manifest, {
-    version: "0.1.0-alpha.0",
-    url: "https://github.com/maddiedreese/multAIplayer/releases/tag/v0.1.0-alpha.0",
-    notes: "Unsigned scaffold.",
+    version: "0.0.0",
+    url: "https://multaiplayer.com",
+    notes: "No supported desktop release has been published.",
     security: false,
     supported: false,
     downloads: {},
@@ -114,9 +114,17 @@ test("does not mark ordinary releases that discuss security", () => {
   assert.equal(manifest.security, false);
 });
 
-test("rejects missing and malformed release tags", () => {
-  assert.throws(() => manifestFromReleases([]), /No published/);
-  assert.throws(() => manifestFromReleases([{ draft: false, tag_name: "latest" }]), /Unsupported release tag/);
+test("returns a neutral no-release manifest when no trusted release exists", () => {
+  const expected = {
+    version: "0.0.0",
+    url: "https://multaiplayer.com",
+    notes: "No supported desktop release has been published.",
+    security: false,
+    supported: false,
+    downloads: {},
+  };
+  assert.deepEqual(manifestFromReleases([]), expected);
+  assert.deepEqual(manifestFromReleases([{ draft: false, tag_name: "latest" }]), expected);
 });
 
 test("requires the complete trusted workflow asset set and official download origin", () => {

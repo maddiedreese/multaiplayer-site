@@ -16,7 +16,7 @@ export default function InviteLanding({
   releaseVersion,
 }: {
   downloadUrl: string | null;
-  releaseVersion: string;
+  releaseVersion: string | null;
 }) {
   const alternateHref = useRef<string | null>(null);
   const clientState = useRef<Exclude<InviteState, "checking"> | undefined>(undefined);
@@ -62,12 +62,12 @@ export default function InviteLanding({
 
       <div className={styles.actions}>
         <button className={styles.primaryButton} type="button" onClick={openInstalledApp}>Open in multAIplayer</button>
-        {downloadUrl ? <a className={styles.secondaryButton} href={downloadUrl} target="_blank" rel="noopener noreferrer">Download for Apple silicon</a> : <span className={styles.secondaryButton} aria-disabled="true">Signed alpha not yet available</span>}
+        {downloadUrl ? <a className={styles.secondaryButton} href={downloadUrl} target="_blank" rel="noopener noreferrer">Download for Apple silicon</a> : <span className={styles.secondaryButton} aria-disabled="true">Signed download not yet published</span>}
       </div>
 
       <div className={styles.steps} aria-label="Installation instructions">
         <div><span>1</span><p><strong>Already installed?</strong> Select <em>Open in multAIplayer</em>. A correctly signed supported app can receive the private link from macOS.</p></div>
-        <div><span>2</span><p><strong>Need the app?</strong> {downloadUrl ? <>Download supported version {releaseVersion}, install it in Applications, then return to this tab and select <em>Open in multAIplayer</em>.</> : <>No supported signed download is published yet. Do not install the old scaffold release; keep the original invitation private and return after the signed alpha is available.</>}</p></div>
+        <div><span>2</span><p><strong>Need the app?</strong> {downloadUrl && releaseVersion ? <>Download supported version {releaseVersion}, install it in Applications, then return to this tab and select <em>Open in multAIplayer</em>.</> : <>The first supported signed download has not been published. Keep the original invitation private and return after the Apple silicon alpha is available.</>}</p></div>
         <div><span>3</span><p><strong>Still in the browser?</strong> Return to the original private message and select the invitation again.</p></div>
       </div>
 

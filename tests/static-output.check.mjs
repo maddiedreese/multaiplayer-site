@@ -36,11 +36,28 @@ test("static export publishes privacy and terms and links them from invitation h
   assert.match(terms, /California law/);
   assert.match(invite, /https:\/\/multaiplayer\.com\/privacy/);
   assert.match(invite, /https:\/\/multaiplayer\.com\/terms/);
+  assert.match(invite, /rel="canonical" href="https:\/\/multaiplayer\.com\/invite"/);
   assert.doesNotMatch(invite, /google-analytics|gtag|segment|mixpanel|amplitude|posthog/i);
   for (const page of [home, faq, invite]) {
     assert.doesNotMatch(page, /releases\/download\/v0\.1\.0-alpha\.0/);
   }
   for (const page of [home, faq]) {
-    assert.match(page, /Signed alpha (?:coming soon|not yet available)/);
+    assert.match(page, /Signed download (?:pending|not yet published)/);
   }
+});
+
+test("static export publishes canonical discovery metadata without indexing private invitations", async () => {
+  const [home, robots, sitemap] = await Promise.all([
+    readFile(new URL("../out/index.html", import.meta.url), "utf8"),
+    readFile(new URL("../out/robots.txt", import.meta.url), "utf8"),
+    readFile(new URL("../out/sitemap.xml", import.meta.url), "utf8"),
+  ]);
+  assert.match(home, /rel="canonical" href="https:\/\/multaiplayer\.com\/?"/);
+  assert.match(robots, /Disallow: \/invite/);
+  assert.match(robots, /Sitemap: https:\/\/multaiplayer\.com\/sitemap\.xml/);
+  for (const route of ["", "faq", "privacy", "terms"]) {
+    const path = route ? `/${route}` : "";
+    assert.match(sitemap, new RegExp(`<loc>https://multaiplayer\\.com${path}</loc>`));
+  }
+  assert.doesNotMatch(sitemap, /\/invite/);
 });

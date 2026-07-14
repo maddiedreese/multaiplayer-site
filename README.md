@@ -19,7 +19,7 @@ MULTAIPLAYER_APPLE_TEAM_ID=YOURTEAMID npm run build
 
 The static export is written to `out/`. Netlify is configured through `netlify.toml` to build and publish that directory.
 
-`MULTAIPLAYER_APPLE_TEAM_ID` is the public 10-character Team ID of the Developer ID identity that signs `com.multaiplayer.desktop`. The build fails when it is absent or malformed, then generates the Apple association file for `/invite`. Production must configure the confirmed value in Netlify; do not commit or guess it.
+`MULTAIPLAYER_APPLE_TEAM_ID` is the public 10-character Team ID of the Developer ID identity that signs `com.multaiplayer.desktop`. The build fails when it is absent or malformed, then generates the Apple association file for `/invite`. Production must configure the confirmed value in Netlify; do not commit or guess it. The build also regenerates the social card from `scripts/generate-social-card.mjs`; edit that source instead of hand-editing the PNG.
 
 ## Invitation links
 
@@ -48,5 +48,5 @@ npm run release:manifest
 ```
 
 Use `--dry-run` to print the manifest without writing it.
-The scheduled workflow also uses `--allow-missing`. A release is supported only when it contains exactly one SHA-256-digested arm64 `.dmg`, the arm64 app archive, checksum manifest, SPDX SBOM, and both Sigstore bundles emitted after signing/notarization verification. If no release has that complete set, the manifest contains no download and every website surface renders **Signed alpha coming soon** instead of exposing the unsupported scaffold. The direct DMG URL, architecture, and digest appear only for a supported release.
+A release is supported only when it contains exactly one SHA-256-digested arm64 `.dmg`, the arm64 app archive, checksum manifest, SPDX SBOM, and both Sigstore bundles emitted after signing/notarization verification. If no release has that complete set, the manifest uses a neutral `0.0.0` no-release record, contains no download, and every website surface says that the signed download has not been published. The direct DMG URL, architecture, and digest appear only for a supported release.
 To trigger the desktop app’s stronger security-update banner, prefix the release name with `[Security]` or add `Security update: true` on its own line in the release body.

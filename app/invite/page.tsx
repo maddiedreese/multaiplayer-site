@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { releaseManifest, supportedMacDownload } from "../../lib/release-manifest";
+import { supportedMacDownload } from "../../lib/release-manifest";
 import { INVITE_CAPTURE_SCRIPT } from "../../lib/invite-capture.mjs";
 import InviteLanding from "./InviteLanding";
 import styles from "./invite.module.css";
@@ -7,6 +7,7 @@ import styles from "./invite.module.css";
 export const metadata: Metadata = {
   title: "Private invitation | multAIplayer",
   description: "Open a private multAIplayer workspace invitation.",
+  alternates: { canonical: "/invite" },
   robots: { index: false, follow: false, nocache: true },
   referrer: "no-referrer",
 };
@@ -24,7 +25,7 @@ export default function InvitePage() {
       </header>
       <InviteLanding
         downloadUrl={supportedMacDownload?.url ?? null}
-        releaseVersion={releaseManifest.version}
+        releaseVersion={supportedMacDownload ? supportedMacDownload.version : null}
       />
       <footer className={styles.footer}>
         <span>Invite capabilities stay on this device.</span>
