@@ -7,10 +7,11 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run aasa:generate && next build && node scripts/generate-static-headers.mjs && node --test tests/static-output.check.mjs",
     "start": "next start",
     "test": "node --test tests/*.test.mjs",
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next",
+    "aasa:generate": "node scripts/generate-aasa.mjs",
     "release:manifest": "node scripts/update-release-manifest.mjs"
   },
   "dependencies": {

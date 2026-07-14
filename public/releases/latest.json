@@ -2,5 +2,13 @@
   "version": "0.1.0-alpha.0",
   "url": "https://github.com/maddiedreese/multAIplayer/releases/tag/v0.1.0-alpha.0",
   "notes": "First public alpha scaffold for multAIplayer.",
-  "security": false
+  "security": false,
+  "downloads": {
+    "macos": {
+      "url": "https://github.com/maddiedreese/multAIplayer/releases/download/v0.1.0-alpha.0/multAIplayer_0.1.0_aarch64.dmg",
+      "name": "multAIplayer_0.1.0_aarch64.dmg",
+      "architecture": "arm64",
+      "digest": "sha256:21de691cc105fb5b3536c8f417fe3b3bb17e629b42cbcbc1403d70ef1e6f6294"
+    }
+  }
 }

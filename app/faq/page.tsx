@@ -72,6 +72,7 @@ const faqs = [
     answer: <>
       <p>Treat a complete invite link as a private bearer secret. It is reasonable to send one through a private direct message or restricted channel whose participants you intend to invite. Do not paste it into public channels, issue trackers, logs, support tickets, or searchable documentation.</p>
       <p>The link does not contain the room key. It contains a random, single-use capability and a public binding to the active host’s identity and device key. Someone with the complete link can submit a device-bound join request, but they do not receive the room key until the active host verifies and approves them.</p>
+      <p>On macOS, selecting the HTTPS link opens an installed signed multAIplayer app. Without the app, it opens a private installation page. That page removes the capability from the address bar immediately, keeps it only in memory, and never stores or submits it. After installation, use the page’s Open in multAIplayer action or select the original invitation again.</p>
       <p>If a link leaks, do not approve an unexpected request. Invalidate the invite and generate a new one. A leaked capability does not reveal existing room content by itself, but it creates an unauthorized opportunity to request access.</p>
     </>,
   },
