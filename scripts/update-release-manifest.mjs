@@ -17,13 +17,47 @@ export function manifestFromReleases(releases) {
   const body = String(release.body ?? "").trim();
   const firstParagraph = body.split(/\n\s*\n/).find((paragraph) => paragraph.trim())?.replace(/\s+/g, " ");
   const notes = firstParagraph?.slice(0, 280) || String(release.name ?? `multAIplayer ${version}`);
+  const diskImages = Array.isArray(release.assets)
+    ? release.assets.filter((asset) => typeof asset?.name === "string" && asset.name.toLowerCase().endsWith(".dmg"))
+    : [];
+  if (diskImages.length !== 1) throw new Error(`Release ${release.tag_name} must contain exactly one macOS disk image.`);
+  const diskImage = diskImages[0];
+  const downloadUrl = normalizedReleaseDownloadUrl(diskImage.browser_download_url, repository);
+  const digest = typeof diskImage.digest === "string" && /^sha256:[a-f0-9]{64}$/.test(diskImage.digest)
+    ? diskImage.digest
+    : undefined;
+  const architecture = /(?:aarch64|arm64)/i.test(diskImage.name)
+    ? "arm64"
+    : /(?:universal)/i.test(diskImage.name) ? "universal" : /(?:x64|x86_64)/i.test(diskImage.name) ? "x64" : "macos";
 
   return {
     version,
     url: release.html_url,
     notes,
     security: /^\[security\]/i.test(String(release.name ?? "").trim()) || /(?:^|\n)Security update:\s*(?:true|yes)(?:\n|$)/i.test(body),
+    downloads: {
+      macos: {
+        url: downloadUrl,
+        name: diskImage.name,
+        architecture,
+        ...(digest ? { digest } : {}),
+      },
+    },
   };
+}
+
+function normalizedReleaseDownloadUrl(value, expectedRepository) {
+  let url;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error("The macOS disk image has an invalid download URL.");
+  }
+  const expectedPrefix = `/maddiedreese/multAIplayer/releases/download/`;
+  if (url.protocol !== "https:" || url.hostname !== "github.com" || !url.pathname.startsWith(expectedPrefix) || expectedRepository !== "maddiedreese/multAIplayer") {
+    throw new Error("The macOS disk image must use the official GitHub release download origin.");
+  }
+  return url.toString();
 }
 
 export async function fetchManifest(fetchImpl = fetch) {
