@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import releaseManifest from "../../public/releases/latest.json";
+import { releaseManifest, supportedMacDownload } from "../../lib/release-manifest";
 import { INVITE_CAPTURE_SCRIPT } from "../../lib/invite-capture.mjs";
 import InviteLanding from "./InviteLanding";
 import styles from "./invite.module.css";
@@ -12,8 +12,6 @@ export const metadata: Metadata = {
 };
 
 export default function InvitePage() {
-  const download = releaseManifest.downloads?.macos;
-
   return (
     <main className={styles.page}>
       <script dangerouslySetInnerHTML={{ __html: INVITE_CAPTURE_SCRIPT }} />
@@ -25,13 +23,14 @@ export default function InvitePage() {
         <span className={styles.privateLabel}>Private invitation</span>
       </header>
       <InviteLanding
-        downloadUrl={download?.url ?? releaseManifest.url}
-        downloadLabel={download?.architecture === "arm64" ? "Download for Apple silicon" : "Download for macOS"}
+        downloadUrl={supportedMacDownload?.url ?? null}
         releaseVersion={releaseManifest.version}
       />
       <footer className={styles.footer}>
         <span>Invite capabilities stay on this device.</span>
         <a href="https://github.com/maddiedreese/multAIplayer/blob/main/docs/threat-model.md">Read the threat model</a>
+        <a href="https://multaiplayer.com/privacy">Privacy</a>
+        <a href="https://multaiplayer.com/terms">Terms</a>
       </footer>
     </main>
   );
