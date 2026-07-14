@@ -12,6 +12,7 @@
 .actions { margin:34px 0 0;display:flex;flex-wrap:wrap;gap:10px }
 .primaryButton,.secondaryButton { min-height:48px;padding:0 19px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #1b1a17;border-radius:7px;font:750 12px/1 inherit;cursor:pointer;text-decoration:none }
 .primaryButton { color:#f7f3e9;background:#1b1a17 }.secondaryButton{color:#1b1a17;background:transparent}
+.secondaryButton[aria-disabled="true"]{cursor:default;opacity:.65}
 .primaryButton:focus-visible,.secondaryButton:focus-visible,.wordmark:focus-visible,.footer a:focus-visible { outline:3px solid #8c7440;outline-offset:3px }
 .steps { margin-top:42px;border-top:1px solid rgba(61,56,47,.17) }
 .steps>div { padding:18px 0;display:grid;grid-template-columns:28px 1fr;gap:13px;border-bottom:1px solid rgba(61,56,47,.17) }

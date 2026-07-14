@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { supportedMacDownload } from "../lib/release-manifest";
 
 const githubUrl = "https://github.com/maddiedreese/multAIplayer";
-const releasesUrl = `${githubUrl}/releases`;
 
 const features = [
   {
@@ -49,11 +49,11 @@ const faqs = [
   },
   {
     q: "Can I self-host the relay?",
-    a: "Yes. The relay is open source and can be self-hosted. The official hosted relay is provided for the easiest first run.",
+    a: "Yes. The relay is open source and can be self-hosted. The free official relay is intended to provide the easiest first run when it is deployed and available, but it has no uptime or continuity guarantee.",
   },
   {
     q: "What platforms are supported?",
-    a: "The first public alpha supports macOS. Additional platforms are not available yet.",
+    a: "The public alpha supports Apple silicon Macs running macOS 11 or later. Intel Macs, Windows, and Linux desktop packages are not supported.",
   },
   {
     q: "Is it ready for sensitive production work?",
@@ -78,11 +78,11 @@ export default function Home() {
         </a>
         <nav aria-label="Primary navigation">
           <a href="#how-it-works">How it works</a>
-          <a href="#privacy">Privacy</a>
+          <Link href="/privacy">Privacy</Link>
           <a href="#open-source">Open source</a>
           <Link href="/faq">FAQ</Link>
         </nav>
-        <a className="header-cta" href={releasesUrl}>Download alpha</a>
+        {supportedMacDownload ? <a className="header-cta" href={supportedMacDownload.url}>Download alpha</a> : <span className="header-cta release-unavailable" aria-disabled="true">Signed alpha coming soon</span>}
       </header>
 
       <section className="hero" id="top">
@@ -92,7 +92,7 @@ export default function Home() {
             A completely free, open-source team room for the conversation, code, tools, and decisions around a shared Codex session.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href={releasesUrl}>Download for macOS <span>↗</span></a>
+            {supportedMacDownload ? <a className="button button-primary" href={supportedMacDownload.url}>Download for Apple silicon <span>↗</span></a> : <span className="button button-primary release-unavailable" aria-disabled="true">Signed alpha coming soon</span>}
             <a className="button button-secondary" href={githubUrl}>View on GitHub <span>↗</span></a>
           </div>
           <div className="hero-requirements" aria-label="Account requirements">
@@ -181,7 +181,7 @@ export default function Home() {
           <div className="section-kicker"><span>03</span> Private by design</div>
           <h2>Your relay moves the room.<br />It doesn’t read the work.</h2>
           <p>Room content is encrypted on devices. Powerful local capabilities remain with the host who owns the machine, project, accounts, and approvals.</p>
-          <p>The custom cryptographic protocol is unaudited. End-to-end encryption is the intended, tested design boundary, not an independently verified guarantee.</p>
+          <p>Room content uses an MLS-based protocol backed by the Rust <code>mls-rs</code> implementation. The integration and product have not been independently audited; end-to-end encryption is an intended and tested boundary, not an independently verified guarantee.</p>
           <ul>
             {trustItems.map((item) => <li key={item}><span>✓</span>{item}</li>)}
           </ul>
@@ -245,8 +245,8 @@ export default function Home() {
         <Image src="/brand/icon.png" alt="multAIplayer icon" width={72} height={72} />
         <div className="eyebrow"><span className="live-dot" /> Public alpha</div>
         <h2>Bring the whole team<br />into the loop.</h2>
-        <p>Download the macOS alpha and start a room around your next build.</p>
-        <a className="button button-primary button-large" href={releasesUrl}>Download for macOS <span>↗</span></a>
+        <p>{supportedMacDownload ? "Download the signed alpha for an Apple silicon Mac running macOS 11 or later." : "The signed Apple silicon alpha is not available yet. The existing scaffold release is unsupported."}</p>
+        {supportedMacDownload ? <a className="button button-primary button-large" href={supportedMacDownload.url}>Download for Apple silicon <span>↗</span></a> : <span className="button button-primary button-large release-unavailable" aria-disabled="true">Signed alpha coming soon</span>}
         <small>Completely free and open source · GitHub account required to sign in</small>
         <small>Hosting requires a Codex account with an active subscription</small>
       </section>
@@ -258,7 +258,7 @@ export default function Home() {
           <p>Made by <a href="https://x.com/maddiedreese">@maddiedreese ↗</a></p>
         </div>
         <div className="footer-links">
-          <div><strong>Product</strong><a href="#how-it-works">How it works</a><Link href="/faq">FAQ</Link><a href={releasesUrl}>Download</a><a href="#privacy">Privacy</a></div>
+          <div><strong>Product</strong><a href="#how-it-works">How it works</a><Link href="/faq">FAQ</Link>{supportedMacDownload ? <a href={supportedMacDownload.url}>Download</a> : <span className="release-unavailable">Signed alpha coming soon</span>}<Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div>
           <div><strong>Project</strong><a href={githubUrl}>GitHub</a><a href={`${githubUrl}/blob/main/docs/using-the-app.md`}>Documentation</a><a href={`${githubUrl}/issues`}>Issues</a></div>
           <div><strong>Trust</strong><a href={`${githubUrl}/blob/main/SECURITY.md`}>Security</a><a href={`${githubUrl}/blob/main/docs/alpha-limitations.md`}>Alpha limitations</a><a href={`${githubUrl}/blob/main/docs/if-unmaintained.md`}>Project continuity</a><a href={`${githubUrl}/blob/main/LICENSE`}>License</a></div>
         </div>

@@ -6,8 +6,11 @@ const apiUrl = process.env.MULTAIPLAYER_RELEASES_API_URL ?? `https://api.github.
 const outputUrl = new URL("../public/releases/latest.json", import.meta.url);
 
 export function manifestFromReleases(releases) {
-  const release = releases.find((candidate) => !candidate.draft);
-  if (!release) throw new Error("No published GitHub Release is available.");
+  const publishedReleases = releases.filter((candidate) => !candidate.draft);
+  const latestRelease = publishedReleases[0];
+  if (!latestRelease) throw new Error("No published GitHub Release is available.");
+  const release = publishedReleases.find((candidate) => trustedReleaseDiskImage(candidate));
+  if (!release) return unavailableManifest(latestRelease);
 
   const version = String(release.tag_name ?? "").replace(/^v/, "");
   if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) {
@@ -17,12 +20,9 @@ export function manifestFromReleases(releases) {
   const body = String(release.body ?? "").trim();
   const firstParagraph = body.split(/\n\s*\n/).find((paragraph) => paragraph.trim())?.replace(/\s+/g, " ");
   const notes = firstParagraph?.slice(0, 280) || String(release.name ?? `multAIplayer ${version}`);
-  const diskImages = Array.isArray(release.assets)
-    ? release.assets.filter((asset) => typeof asset?.name === "string" && asset.name.toLowerCase().endsWith(".dmg"))
-    : [];
-  if (diskImages.length !== 1) throw new Error(`Release ${release.tag_name} must contain exactly one macOS disk image.`);
-  const diskImage = diskImages[0];
-  const downloadUrl = normalizedReleaseDownloadUrl(diskImage.browser_download_url, repository);
+  const diskImage = trustedReleaseDiskImage(release);
+  if (!diskImage) throw new Error(`Release ${release.tag_name} lost its trusted macOS asset set.`);
+  const downloadUrl = normalizedReleaseDownloadUrl(diskImage.browser_download_url, repository, release.tag_name);
   const digest = typeof diskImage.digest === "string" && /^sha256:[a-f0-9]{64}$/.test(diskImage.digest)
     ? diskImage.digest
     : undefined;
@@ -35,6 +35,7 @@ export function manifestFromReleases(releases) {
     url: release.html_url,
     notes,
     security: /^\[security\]/i.test(String(release.name ?? "").trim()) || /(?:^|\n)Security update:\s*(?:true|yes)(?:\n|$)/i.test(body),
+    supported: true,
     downloads: {
       macos: {
         url: downloadUrl,
@@ -46,14 +47,53 @@ export function manifestFromReleases(releases) {
   };
 }
 
-function normalizedReleaseDownloadUrl(value, expectedRepository) {
+const trustedReleaseAssetNames = [
+  "multAIplayer-macos-arm64-app.zip",
+  "SHA256SUMS.txt",
+  "multaiplayer.spdx.json",
+  "SHA256SUMS.txt.sigstore.json",
+  "multaiplayer.spdx.json.sigstore.json",
+];
+
+function trustedReleaseDiskImage(release) {
+  const assets = Array.isArray(release?.assets) ? release.assets : [];
+  const names = new Set(assets.map((asset) => asset?.name).filter((name) => typeof name === "string"));
+  if (!trustedReleaseAssetNames.every((name) => names.has(name))) return null;
+  const diskImages = assets.filter((asset) =>
+    typeof asset?.name === "string" &&
+    asset.name.toLowerCase().endsWith(".dmg") &&
+    /(?:aarch64|arm64)/i.test(asset.name) &&
+    typeof asset.digest === "string" &&
+    /^sha256:[a-f0-9]{64}$/.test(asset.digest)
+  );
+  return diskImages.length === 1 ? diskImages[0] : null;
+}
+
+function unavailableManifest(release) {
+  const version = String(release.tag_name ?? "").replace(/^v/, "");
+  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) {
+    throw new Error(`Unsupported release tag: ${release.tag_name ?? "missing"}`);
+  }
+  const body = String(release.body ?? "").trim();
+  const firstParagraph = body.split(/\n\s*\n/).find((paragraph) => paragraph.trim())?.replace(/\s+/g, " ");
+  return {
+    version,
+    url: release.html_url,
+    notes: firstParagraph?.slice(0, 280) || String(release.name ?? `multAIplayer ${version}`),
+    security: /^\[security\]/i.test(String(release.name ?? "").trim()) || /(?:^|\n)Security update:\s*(?:true|yes)(?:\n|$)/i.test(body),
+    supported: false,
+    downloads: {},
+  };
+}
+
+function normalizedReleaseDownloadUrl(value, expectedRepository, expectedTag) {
   let url;
   try {
     url = new URL(value);
   } catch {
     throw new Error("The macOS disk image has an invalid download URL.");
   }
-  const expectedPrefix = `/maddiedreese/multAIplayer/releases/download/`;
+  const expectedPrefix = `/maddiedreese/multAIplayer/releases/download/${encodeURIComponent(String(expectedTag))}/`;
   if (url.protocol !== "https:" || url.hostname !== "github.com" || !url.pathname.startsWith(expectedPrefix) || expectedRepository !== "maddiedreese/multAIplayer") {
     throw new Error("The macOS disk image must use the official GitHub release download origin.");
   }

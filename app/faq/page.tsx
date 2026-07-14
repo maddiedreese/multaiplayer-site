@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { supportedMacDownload } from "../../lib/release-manifest";
 
 const githubUrl = "https://github.com/maddiedreese/multAIplayer";
 const docsUrl = `${githubUrl}/blob/main/docs`;
@@ -32,11 +33,11 @@ const faqs = [
   },
   {
     category: "Trust and security",
-    question: "Why did you build custom cryptography instead of using Matrix or MLS?",
+    question: "How does room encryption work, and is it audited?",
     answer: <>
-      <p>The current product has one active host, small rooms, host-controlled membership, and a relatively simple key lifecycle. Each room uses independently generated epoch keys, and the active host delivers each new key separately to eligible registered devices using authenticated device-specific wrapping.</p>
-      <p>MLS solves a broader problem involving decentralized membership, proposals, commits, tree synchronization, missed-update recovery, credential validation, and interoperability. Implementing only selected pieces of MLS would not provide MLS security guarantees. Matrix would also introduce a much broader federated messaging, identity, and server-state architecture than this product currently needs.</p>
-      <p>The smaller design is easier for this project to implement, test, document, and eventually replace. That is a scope decision, not a claim that custom cryptography is inherently better. The protocol has not been independently audited, does not provide MLS guarantees, and remains isolated behind a small crypto package so migration to a maintained group-messaging implementation remains possible. Read the <a href={`${docsUrl}/cryptography.md`}>cryptography architecture</a> and <a href={`${docsUrl}/threat-model.md`}>threat model</a>.</p>
+      <p>Protocol v2 uses RFC 9420 Messaging Layer Security concepts through the Rust <code>mls-rs</code> implementation. Devices hold MLS state and secrets locally, publish MLS PrivateMessages through the relay, and use signed KeyPackages, Add commits, and Welcome messages for membership changes.</p>
+      <p>The relay routes and persists ciphertext plus the metadata needed for authorization, delivery, replay protection, limits, and operations. It does not receive MLS epoch secrets. Removing a member advances the group epoch so that the removed device cannot decrypt later messages, but it cannot erase content or keys the device already received.</p>
+      <p>The multAIplayer integration and product have not been independently audited. Using a maintained MLS implementation reduces custom cryptographic surface but is not a blanket security guarantee. Protocol v2 is intentionally incompatible with legacy pre-v2 rooms and invitations. Read the <a href={`${docsUrl}/cryptography.md`}>cryptography architecture</a> and <a href={`${docsUrl}/threat-model.md`}>threat model</a>.</p>
     </>,
   },
   {
@@ -48,12 +49,13 @@ const faqs = [
         <li>GitHub user identifiers and basic profile information used for sign-in</li>
         <li>Team and room identifiers and names, membership, roles, host status, and presence</li>
         <li>Device identifiers, registered public keys, and public-key fingerprints</li>
-        <li>Project path labels, selected model identifiers, and certain room configuration values</li>
+        <li>The selected local project path string, which may reveal directory or user names, selected model identifiers, and certain room configuration values</li>
         <li>Invite identifiers, expiration data, and other invite metadata</li>
         <li>Encrypted event types, sender and device identifiers, timestamps, key epochs, and ciphertext sizes</li>
-        <li>Encrypted attachment metadata and operational counters</li>
+        <li>Encrypted attachment blobs; plaintext filename, MIME type, size, and routing metadata; and operational counters</li>
+        <li>For GitHub operations you request, transient pull-request fields and Actions run metadata that the relay forwards without adding them to persistent relay state or logs</li>
       </ul>
-      <p>The relay is designed not to receive or store plaintext room messages, attachment contents, project files, file diffs, terminal output, browser contents, Codex credentials, OpenAI credentials, room keys, or plaintext GitHub access tokens. GitHub access tokens remain relay-side and are encrypted before persistent storage when the relay has a strong session secret.</p>
+      <p>Your GitHub and device display identity, role, presence, and public device keys are visible to authorized teammates where the roster and room workflow require them. Except for content you deliberately put in a GitHub operation field, the relay is designed not to receive plaintext room messages, attachment contents, project files, file diffs, terminal output, browser contents, Codex credentials, OpenAI credentials, or MLS secrets. GitHub access tokens remain relay-side and are encrypted before persistent storage when the relay has a strong session secret.</p>
       <p>This is an intended and tested architecture boundary, not an independently audited guarantee. The detailed inventory is in the <a href={`${docsUrl}/threat-model.md`}>threat model</a>.</p>
     </>,
   },
@@ -71,7 +73,7 @@ const faqs = [
     question: "Are invite links safe to paste into Slack or Discord? What happens if one leaks?",
     answer: <>
       <p>Treat a complete invite link as a private bearer secret. It is reasonable to send one through a private direct message or restricted channel whose participants you intend to invite. Do not paste it into public channels, issue trackers, logs, support tickets, or searchable documentation.</p>
-      <p>The link does not contain the room key. It contains a random, single-use capability and a public binding to the active host’s identity and device key. Someone with the complete link can submit a device-bound join request, but they do not receive the room key until the active host verifies and approves them.</p>
+      <p>The link does not contain MLS room secrets. It contains a random, single-use capability and a protected binding to the active host, room, invitation, and expiry. Someone with the complete link can submit a device-bound join request, but the device joins only after the active host verifies it, approves it, commits the MLS Add, and returns the resulting Welcome.</p>
       <p>On macOS, selecting the HTTPS link opens an installed signed multAIplayer app. Without the app, it opens a private installation page. That page removes the capability from the address bar immediately, keeps it only in memory, and never stores or submits it. After installation, use the page’s Open in multAIplayer action or select the original invitation again.</p>
       <p>If a link leaks, do not approve an unexpected request. Invalidate the invite and generate a new one. A leaked capability does not reveal existing room content by itself, but it creates an unauthorized opportunity to request access.</p>
     </>,
@@ -98,7 +100,7 @@ const faqs = [
     category: "Scope and platform",
     question: "Why is it macOS-only, and when do Windows and Linux land?",
     answer: <>
-      <p>macOS is the sole supported release target for the public alpha.</p>
+      <p>An Apple silicon Mac running macOS 11 or later is the sole supported release target for the public alpha. Intel Macs are not supported.</p>
       <p>The native app relies on platform-sensitive behavior including Tauri and WebView integration, Keychain storage, process containment, terminal handling, browser profiles, Developer ID signing, notarization, and Gatekeeper verification. Supporting a platform means validating those security and lifecycle boundaries, not only producing a binary that launches.</p>
       <p>Linux is used as a development and CI compatibility target in parts of the project, but Linux desktop packages are not supported or published. Windows packages are also not configured or published. There is no committed Windows or Linux timeline.</p>
     </>,
@@ -117,7 +119,7 @@ const faqs = [
     question: "Why GitHub-only sign-in?",
     answer: <>
       <p>GitHub currently serves two related purposes: room identity and the built-in GitHub workflow.</p>
-      <p>The relay uses GitHub device-code OAuth to identify users and scope team and room metadata. The same relay-side session supports draft pull request creation and GitHub Actions status without exposing the access token to desktop clients. Using one provider keeps the alpha’s identity, authorization, PR, and Actions surfaces small enough to review and operate.</p>
+      <p>The relay uses GitHub device-code OAuth to identify users and scope team and room metadata. The official alpha requests access to public and private repositories. The same relay-side session supports repository operations, draft pull request creation, and GitHub Actions status without exposing the access token to desktop clients. Using one provider keeps the alpha’s identity, authorization, PR, and Actions surfaces small enough to review and operate.</p>
       <p>GitHub-only sign-in is an alpha scope decision. Other identity providers and a GitHub App model are possible future directions, but neither is committed for the initial alpha. A private local or LAN relay can explicitly disable authentication, but that mode is not appropriate for an internet-facing relay.</p>
     </>,
   },
@@ -126,7 +128,7 @@ const faqs = [
     question: "What happens when the active host goes offline mid-session?",
     answer: <>
       <p>The active host’s local capabilities stop being available. New Codex turns, terminal commands, file saves, browser opens, and Git mutations cannot execute on that machine. In-flight local work may fail or require the original host to reconnect and retry.</p>
-      <p>Members who already possess the room key can continue encrypted chat and read locally available history. The relay does not take over the host’s Codex session, project folder, terminal processes, browser state, or credentials.</p>
+      <p>Members with current local MLS state can continue encrypted chat and read locally available history. The relay does not take over the host’s Codex session, project folder, terminal processes, browser state, or credentials.</p>
       <p>Explicit host handoff lets a replacement host use their own machine, Codex access, credentials, and project checkout. There is no transparent machine failover, and an abrupt disconnect may not produce a complete handoff package. Normal Git commits, branches, backups, and clean handoffs remain the reliable continuity path.</p>
     </>,
   },
@@ -143,12 +145,12 @@ const faqs = [
     category: "Architecture and operations",
     question: "What happens to my data if the hosted relay or the project shuts down?",
     answer: <>
-      <p>Your project folder, Git repository, branches, commits, room keys, and encrypted local history are not owned by the relay. They remain on the relevant devices.</p>
+      <p>Your project folder, Git repository, branches, commits, MLS state and secrets, and encrypted local history are not owned by the relay. They remain on the relevant devices.</p>
       <p>The relay holds routing and membership state, encrypted backlog, encrypted attachment blobs, invites, and sessions. Migration recreates teams, rooms, memberships, sessions, and invites. It does not automatically transfer hosted backlog or attachment blobs, and a destination relay cannot reconstruct device-local keys or history.</p>
       <ul>
         <li>Keep normal project and Git backups and push important branches</li>
         <li>Export important conversations to Markdown and save important attachments</li>
-        <li>Keep every device that contains needed room keys and encrypted history</li>
+        <li>Keep every device that contains needed MLS state and encrypted history</li>
         <li>Test self-hosting before an emergency</li>
       </ul>
       <p>Planned hosted-relay shutdowns provide at least 30 days of public notice when safely possible. Read <a href={`${docsUrl}/if-unmaintained.md`}>If this project goes unmaintained</a> for the complete exit path.</p>
@@ -159,7 +161,7 @@ const faqs = [
     question: "Is this safe to use on a private or work repository yet?",
     answer: <>
       <p>Probably not yet, unless your team has reviewed the risks and decided the current alpha controls are appropriate for that repository.</p>
-      <p>The encryption is unaudited. Room membership grants access to meaningful project context. Approved Codex turns and terminal commands can affect the host’s files and accounts. Signed-in browser pages, terminal output, private paths, diffs, copied Markdown, and local tools can expose sensitive information.</p>
+      <p>The product’s MLS integration is unaudited. Room membership grants access to meaningful project context. Approved Codex turns and terminal commands can affect the host’s files and accounts. Signed-in browser pages, terminal output, private paths, diffs, copied Markdown, and local tools can expose sensitive information.</p>
       <p>Start with a disposable or public test repository with no production secrets. Use a separate branch, keep a clean remote backup, work with trusted people, use dummy credentials, keep browser sessions free of sensitive accounts, and review every approval. Test member removal, key rotation, host handoff, relay restart, and local export before introducing private code. Read the <a href={`${docsUrl}/alpha-limitations.md`}>alpha limitations</a>.</p>
     </>,
   },
@@ -168,7 +170,7 @@ const faqs = [
     question: "What does alpha mean concretely? What is most likely to break?",
     answer: <>
       <p>Alpha means the core product exists and is tested, but its compatibility, recovery, operations, and multi-device behavior are still being validated under real use.</p>
-      <p>Likely failure areas include Codex app-server compatibility, interrupted host-local work, incomplete handoffs, relay and OAuth configuration, local room-key and history recovery, native browser and terminal differences, local preview tunnels, long-lived relay scaling, manual update transitions, multi-device state races, and warnings that fail to recognize an unusual secret or dangerous command.</p>
+      <p>Likely failure areas include Codex app-server compatibility, interrupted host-local work, incomplete handoffs, relay and OAuth configuration, local MLS state and history recovery, native browser and terminal differences, local preview tunnels, long-lived relay scaling, manual update transitions, multi-device state races, and warnings that fail to recognize an unusual secret or dangerous command.</p>
       <p>Treat the alpha as security-sensitive development software. Keep recoverable copies of important work, expect occasional manual recovery, and report reproducible problems using dummy data and the project’s bounded diagnostics tools.</p>
     </>,
   },
@@ -184,8 +186,8 @@ export default function FaqPage() {
           <Image src="/brand/icon.png" alt="" width={34} height={34} priority />
           <span><strong>multAIplayer</strong><small>group chat for Codex</small></span>
         </Link>
-        <nav aria-label="FAQ navigation"><Link href="/">Home</Link><a href={`${githubUrl}/blob/main/README.md`}>Documentation</a></nav>
-        <a className="header-cta" href={`${githubUrl}/releases`}>Download alpha</a>
+        <nav aria-label="FAQ navigation"><Link href="/">Home</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><a href={`${githubUrl}/blob/main/README.md`}>Documentation</a></nav>
+        {supportedMacDownload ? <a className="header-cta" href={supportedMacDownload.url}>Download alpha</a> : <span className="header-cta release-unavailable" aria-disabled="true">Signed alpha coming soon</span>}
       </header>
 
       <section className="faq-page-intro">
@@ -212,6 +214,7 @@ export default function FaqPage() {
 
       <footer className="faq-page-footer">
         <Link className="wordmark" href="/"><Image src="/brand/icon.png" alt="" width={34} height={34} /><span><strong>multAIplayer</strong><small>Build with Codex. Together.</small></span></Link>
+        <nav aria-label="Footer legal navigation"><Link href="/privacy">Privacy Policy</Link><Link href="/terms">Terms of Service</Link></nav>
         <p>Independent, open source, and not affiliated with or endorsed by OpenAI.</p>
       </footer>
     </main>
