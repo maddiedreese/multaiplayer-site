@@ -32,6 +32,8 @@ test("published policies contain the required identity, date, platform, hosting,
   assert.match(privacy, /version.*HMAC-SHA-256.*deletion-attempt time.*backup-expiry date.*random entry identifier.*authentication code/);
   assert.match(privacy, /remain for 90 days.*89-day maximum backup retention/);
   assert.match(privacy, /accepted and pending.*fail-closed reconciliation before it next accepts traffic/);
+  assert.match(privacy, /Room exports are passphrase-encrypted age files/);
+  assert.match(privacy, /Archives omit MLS secrets, device credentials, pending approvals, and host authority/);
 });
 
 test("every public website surface links both policies", async () => {
