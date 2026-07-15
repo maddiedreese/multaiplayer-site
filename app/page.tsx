@@ -72,7 +72,7 @@ const faqs = [
   },
   {
     q: "Who maintains multAIplayer and the hosted relay?",
-    a: "multAIplayer is currently maintained by one person. Releases, security fixes, compatibility, and continued operation of the hosted relay are not guaranteed, so keep normal project and Git backups and review the project’s continuity guidance before depending on the alpha for important work.",
+    a: "multAIplayer is currently maintained by one person, Maddie. D. Reese. Releases, security fixes, compatibility, and continued operation of the hosted relay are not guaranteed, so keep normal project and Git backups and review the project’s continuity guidance before depending on the alpha for important work.",
   },
 ];
 
@@ -110,7 +110,7 @@ export default function Home() {
             <div><strong>Host a room</strong><span>Codex account + active subscription required</span></div>
             <div><strong>Sign in</strong><span>GitHub account required</span></div>
           </div>
-          <p className="hero-note">Standard open-source Codex app-server · No replacement system or developer instructions · Self-hostable relay · Made by <a href="https://x.com/maddiedreese">@maddiedreese ↗</a></p>
+          <p className="hero-note">Self-hostable relay · Made by <a href="https://x.com/maddiedreese">@maddiedreese ↗</a></p>
           <aside className="hero-disclaimer">
             <strong>Independent open-source project</strong>
             <span>multAIplayer is an independent open-source project and is not affiliated with, endorsed by, or sponsored by OpenAI. The OpenAI and Codex names belong to OpenAI.</span>
