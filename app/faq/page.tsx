@@ -24,6 +24,11 @@ const faqs = [
     answer: <p>One active host supplies the project, Codex process, tools, credentials, and approval decisions. Teammates can propose actions, but consequential local work crosses host review and native authorization. Approval still carries real risk; see the <a href={`${docsUrl}/threat-model.md`}>threat model</a>.</p>,
   },
   {
+    category: "Product",
+    question: "Does multAIplayer customize Codex's instructions?",
+    answer: <p>No. The app uses the standard open-source Codex app-server on the active host and does not replace Codex&apos;s system or developer instructions or ship a custom Codex prompt. Approved room context is sent as ordinary turn input with untrusted material explicitly labeled.</p>,
+  },
+  {
     category: "Trust",
     question: "How are rooms encrypted, and has this been audited?",
     answer: <p>The mechanism uses RFC 9420 MLS through <code>mls-rs</code>, with native-client encryption and exporter-derived protection for relevant payloads. The integration has not received an independent professional security audit. The <a href={`${docsUrl}/threat-model.md`}>threat model</a> is the sole normative claims source; reviewers can use the <a href={`${docsUrl}/external-review-packet.md`}>external review packet</a>.</p>,
@@ -46,7 +51,7 @@ const faqs = [
   {
     category: "Operations",
     question: "How are desktop updates protected?",
-    answer: <p>Supported releases are Developer ID-signed and notarized. The desktop updater uses the application repository&apos;s pinned <code>update-channel</code> branch and accepts only archives carrying the Tauri release signature. The website&apos;s release manifest drives download links; it is not an updater trust root. Releases also publish checksums, Sigstore evidence, an SPDX SBOM, and reproducibility evidence. Follow the <a href={`${docsUrl}/reproducible-builds.md`}>verification guide</a>.</p>,
+    answer: <p>Supported releases are Developer ID-signed and notarized. The desktop updater uses the application repository&apos;s pinned <code>update-channel</code> branch and accepts only archives carrying the Tauri release signature. The website&apos;s release manifest drives download links; it is not an updater trust root. This site separately publishes the <Link href="/security/updater-key">pre-committed updater-key fingerprint</Link> so it can be compared outside the GitHub release channel. Releases also publish checksums, Sigstore evidence, an SPDX SBOM, and reproducibility evidence. Follow the <a href={`${docsUrl}/reproducible-builds.md`}>verification guide</a>.</p>,
   },
   {
     category: "Scope",

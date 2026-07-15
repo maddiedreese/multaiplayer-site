@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export const dynamic = "force-static";
 
-const publicRoutes = ["", "/faq", "/privacy", "/terms"] as const;
+const publicRoutes = ["", "/faq", "/privacy", "/terms", "/security/updater-key"] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return publicRoutes.map((route) => ({
