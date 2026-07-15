@@ -8,7 +8,7 @@ const docsUrl = `${githubUrl}/blob/main/docs`;
 
 export const metadata: Metadata = {
   title: "FAQ | multAIplayer",
-  description: "Fact-based answers about multAIplayer, its trust model, supported scope, architecture, and public alpha.",
+  description: "Fact-based answers about multAIplayer, its trust model, supported scope, architecture, and planned public alpha.",
   alternates: { canonical: "/faq" },
 };
 
@@ -100,7 +100,7 @@ const faqs = [
     category: "Scope and platform",
     question: "Why is it macOS-only, and when do Windows and Linux land?",
     answer: <>
-      <p>An Apple silicon Mac running macOS 11 or later is the sole supported release target for the public alpha. Intel Macs are not supported.</p>
+      <p>An Apple silicon Mac running macOS 11 or later is the sole supported release target for the first public alpha. Intel Macs are not supported.</p>
       <p>The native app relies on platform-sensitive behavior including Tauri and WebView integration, Keychain storage, process containment, terminal handling, browser profiles, Developer ID signing, notarization, and Gatekeeper verification. Supporting a platform means validating those security and lifecycle boundaries, not only producing a binary that launches.</p>
       <p>Linux is used as a development and CI compatibility target in parts of the project, but Linux desktop packages are not supported or published. Windows packages are also not configured or published. There is no committed Windows or Linux timeline.</p>
     </>,
@@ -187,13 +187,13 @@ export default function FaqPage() {
           <span><strong>multAIplayer</strong><small>group chat for Codex</small></span>
         </Link>
         <nav aria-label="FAQ navigation"><Link href="/">Home</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><a href={`${githubUrl}/blob/main/README.md`}>Documentation</a></nav>
-        {supportedMacDownload ? <a className="header-cta" href={supportedMacDownload.url}>Download alpha</a> : <span className="header-cta release-unavailable" aria-disabled="true">Signed alpha coming soon</span>}
+        {supportedMacDownload ? <a className="header-cta" href={supportedMacDownload.url}>Download alpha</a> : <span className="header-cta release-unavailable" aria-disabled="true">Signed download pending</span>}
       </header>
 
       <section className="faq-page-intro">
         <div className="section-kicker section-kicker-dark"><span>FAQ</span> Product, trust, and scope</div>
         <h1>Good questions deserve direct answers.</h1>
-        <p>What multAIplayer is for, what the relay can see, what room members can request, and where the public alpha still has hard limits.</p>
+        <p>What multAIplayer is for, what the relay can see, what room members can request, and where the planned public alpha has hard limits.</p>
       </section>
 
       <div className="faq-page-content">

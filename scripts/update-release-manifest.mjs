@@ -7,10 +7,8 @@ const outputUrl = new URL("../public/releases/latest.json", import.meta.url);
 
 export function manifestFromReleases(releases) {
   const publishedReleases = releases.filter((candidate) => !candidate.draft);
-  const latestRelease = publishedReleases[0];
-  if (!latestRelease) throw new Error("No published GitHub Release is available.");
   const release = publishedReleases.find((candidate) => trustedReleaseDiskImage(candidate));
-  if (!release) return unavailableManifest(latestRelease);
+  if (!release) return unavailableManifest();
 
   const version = String(release.tag_name ?? "").replace(/^v/, "");
   if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) {
@@ -69,18 +67,12 @@ function trustedReleaseDiskImage(release) {
   return diskImages.length === 1 ? diskImages[0] : null;
 }
 
-function unavailableManifest(release) {
-  const version = String(release.tag_name ?? "").replace(/^v/, "");
-  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) {
-    throw new Error(`Unsupported release tag: ${release.tag_name ?? "missing"}`);
-  }
-  const body = String(release.body ?? "").trim();
-  const firstParagraph = body.split(/\n\s*\n/).find((paragraph) => paragraph.trim())?.replace(/\s+/g, " ");
+function unavailableManifest() {
   return {
-    version,
-    url: release.html_url,
-    notes: firstParagraph?.slice(0, 280) || String(release.name ?? `multAIplayer ${version}`),
-    security: /^\[security\]/i.test(String(release.name ?? "").trim()) || /(?:^|\n)Security update:\s*(?:true|yes)(?:\n|$)/i.test(body),
+    version: "0.0.0",
+    url: "https://multaiplayer.com",
+    notes: "No supported desktop release has been published.",
+    security: false,
     supported: false,
     downloads: {},
   };
@@ -116,16 +108,7 @@ export async function fetchManifest(fetchImpl = fetch) {
 }
 
 async function main() {
-  let manifest;
-  try {
-    manifest = await fetchManifest();
-  } catch (error) {
-    if (process.argv.includes("--allow-missing") && error instanceof Error && /No published GitHub Release/.test(error.message)) {
-      console.log("No published app release exists yet; keeping the launch placeholder manifest.");
-      return;
-    }
-    throw error;
-  }
+  const manifest = await fetchManifest();
   const serialized = `${JSON.stringify(manifest, null, 2)}\n`;
   if (process.argv.includes("--dry-run")) {
     process.stdout.write(serialized);

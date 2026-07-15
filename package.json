@@ -7,11 +7,12 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "npm run aasa:generate && next build && node scripts/generate-static-headers.mjs && node --test tests/static-output.check.mjs",
+    "build": "npm run assets:generate && npm run aasa:generate && next build && node scripts/generate-static-headers.mjs && node --test tests/static-output.check.mjs",
     "start": "next start",
     "test": "node --test tests/*.test.mjs",
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next",
     "aasa:generate": "node scripts/generate-aasa.mjs",
+    "assets:generate": "node scripts/generate-social-card.mjs",
     "release:manifest": "node scripts/update-release-manifest.mjs"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.6",
+    "sharp": "0.34.5",
     "typescript": "5.9.3"
   },
   "overrides": {
