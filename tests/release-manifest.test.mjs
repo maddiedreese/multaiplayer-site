@@ -11,6 +11,10 @@ const trustedAssets = [
   diskImage,
   ...[
     "multAIplayer-macos-arm64-app.zip",
+    "multAIplayer-macos-arm64.app.tar.gz",
+    "multAIplayer-macos-arm64.app.tar.gz.sig",
+    "latest.json",
+    "desktop-reproducibility-evidence.zip",
     "SHA256SUMS.txt",
     "multaiplayer.spdx.json",
     "SHA256SUMS.txt.sigstore.json",
@@ -131,6 +135,19 @@ test("requires the complete trusted workflow asset set and official download ori
   const release = { draft: false, tag_name: "v0.1.0", html_url: "https://example.com", assets: [] };
   assert.equal(manifestFromReleases([release]).supported, false);
   assert.equal(manifestFromReleases([{ ...release, assets: [diskImage, diskImage, ...trustedAssets.slice(1)] }]).supported, false);
+  for (const requiredAsset of trustedAssets.slice(1)) {
+    const withoutRequiredAsset = trustedAssets.filter((asset) => asset !== requiredAsset);
+    assert.equal(
+      manifestFromReleases([{ ...release, assets: withoutRequiredAsset }]).supported,
+      false,
+      `release must include ${requiredAsset.name}`,
+    );
+    assert.equal(
+      manifestFromReleases([{ ...release, assets: [...trustedAssets, requiredAsset] }]).supported,
+      false,
+      `release must include exactly one ${requiredAsset.name}`,
+    );
+  }
   assert.throws(
     () => manifestFromReleases([{ ...release, assets: [{ ...diskImage, browser_download_url: "https://evil.example/app.dmg" }, ...trustedAssets.slice(1)] }]),
     /official GitHub/

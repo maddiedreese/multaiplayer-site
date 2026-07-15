@@ -39,7 +39,7 @@ Before releasing a desktop build, verify that both live association files contai
 
 ## Release manifest
 
-The desktop app checks `https://multaiplayer.com/releases/latest.json` for updates. `.github/workflows/update-release-manifest.yml` checks the application repository for a non-draft GitHub Release, including prereleases, that contains the complete trusted release-workflow asset set. It commits the generated manifest only when it changes, which triggers the normal Netlify deployment.
+The website checks the application repository for a non-draft GitHub Release, including prereleases, that contains the complete trusted release-workflow asset set. It publishes `https://multaiplayer.com/releases/latest.json` for website download surfaces. The desktop uses the separately signed Tauri manifest on the application repository's pinned `update-channel` branch; the website manifest is not an updater trust root.
 
 Run the updater locally with:
 
@@ -48,5 +48,4 @@ npm run release:manifest
 ```
 
 Use `--dry-run` to print the manifest without writing it.
-A release is supported only when it contains exactly one SHA-256-digested arm64 `.dmg`, the arm64 app archive, checksum manifest, SPDX SBOM, and both Sigstore bundles emitted after signing/notarization verification. If no release has that complete set, the manifest uses a neutral `0.0.0` no-release record, contains no download, and every website surface says that the signed download has not been published. The direct DMG URL, architecture, and digest appear only for a supported release.
-To trigger the desktop app’s stronger security-update banner, prefix the release name with `[Security]` or add `Security update: true` on its own line in the release body.
+A release is supported only when it contains exactly one SHA-256-digested arm64 `.dmg` and exactly one of every trusted workflow asset: `multAIplayer-macos-arm64-app.zip`, `multAIplayer-macos-arm64.app.tar.gz`, its `.sig`, `latest.json`, `desktop-reproducibility-evidence.zip`, `SHA256SUMS.txt`, `multaiplayer.spdx.json`, and both Sigstore bundles. If no release has that complete set, the website manifest uses a neutral `0.0.0` no-release record, contains no download, and every surface says that the signed download has not been published. The direct DMG URL, architecture, and digest appear only for a supported release.
