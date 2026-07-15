@@ -26,6 +26,10 @@ test("published policies contain the required identity, date, platform, hosting,
   assert.match(privacy, /does not add these proxy request or response bodies to its persistent relay state or logs/);
   assert.match(privacy, /shown as needed to authorized teammates/);
   assert.match(privacy, /We will never ask you for a complete invite link or fragment/);
+  assert.match(privacy, /separate Railway object-storage bucket outside the relay database and its backup set/);
+  assert.match(privacy, /version.*HMAC-SHA-256.*deletion-attempt time.*backup-expiry date.*random entry identifier.*authentication code/);
+  assert.match(privacy, /remain for 90 days.*89-day maximum backup retention/);
+  assert.match(privacy, /accepted and pending.*fail-closed reconciliation before it next accepts traffic/);
 });
 
 test("every public website surface links both policies", async () => {
