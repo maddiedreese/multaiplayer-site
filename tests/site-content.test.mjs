@@ -29,6 +29,12 @@ test("marketing surfaces use sanitized current product content", async () => {
   assert.match(preview, /role="img"/);
   assert.match(preview, /aria-label="Illustration of the multAIplayer desktop room/);
   assert.doesNotMatch(preview, /<(?:a|button|input|select|textarea)\b/);
+  assert.match(home, /Monaco Editor/);
+  assert.match(home, /xterm\.js/);
+  assert.match(home, /Cloudflare Quick Tunnel/);
+  assert.match(home, /install cloudflared/);
+  assert.match(home, /relay never proxies the preview/);
+  assert.match(home, /current Git working tree/);
   assert.match(social, /APPLE SILICON/);
   assert.match(social, /macOS 11 or later/);
   assert.match(manifest, /"version": "0\.0\.0"/);

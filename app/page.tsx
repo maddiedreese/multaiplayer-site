@@ -8,23 +8,23 @@ const githubUrl = "https://github.com/maddiedreese/multAIplayer";
 const features = [
   {
     number: "01",
-    title: "A room around the work",
-    copy: "Chat, project files, diffs, terminals, browser previews, Git, and Codex activity stay together in one project room.",
+    title: "Edit together, with Monaco",
+    copy: "Browse the host’s project, open bounded previews and diffs, and edit text files in a language-aware Monaco Editor. Host saves are direct; teammate saves wait for host approval.",
   },
   {
     number: "02",
-    title: "Codex, with a human boundary",
-    copy: "Anyone can propose a turn. The active host sees the exact context and approves execution on their machine.",
+    title: "Room terminals with xterm.js",
+    copy: "Named xterm.js terminals connect to a native Rust PTY. The host can run, restart, and inspect them while exact command and input requests stay behind native confirmation.",
   },
   {
     number: "03",
-    title: "Pick up when a host steps away",
-    copy: "Hand off hosting when someone leaves or reaches a usage limit. The next host uses their own machine and Codex access.",
+    title: "Preview inside the room",
+    copy: "Open approved sites in isolated room browser tabs. To share a localhost build, install cloudflared and start a temporary Cloudflare Quick Tunnel—the relay never proxies the preview.",
   },
   {
     number: "04",
-    title: "From conversation to pull request",
-    copy: "Review changes, create a branch, commit, push, open a draft PR, and follow GitHub Actions without losing the room’s context.",
+    title: "From Codex to pull request",
+    copy: "Follow structured Codex work, review the current Git working tree, create a branch, commit, push, open a draft PR, and watch GitHub Actions without losing the room’s context.",
   },
 ];
 
@@ -126,7 +126,7 @@ export default function Home() {
         <div className="section-kicker"><span>01</span> One room, shared momentum</div>
         <div className="intro-heading">
           <h2>Pair programming grew up.<br />Now it has a whole team.</h2>
-          <p>multAIplayer keeps the people and the agent in the same loop without turning your local machine into an invisible shared service.</p>
+          <p>multAIplayer keeps the conversation, Monaco editor, xterm.js terminals, isolated browser previews, Git workflow, and Codex activity in the same room—without turning your local machine into an invisible shared service.</p>
         </div>
 
         <div className="feature-grid">
