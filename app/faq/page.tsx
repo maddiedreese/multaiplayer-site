@@ -49,13 +49,11 @@ const faqs = [
         <li>GitHub user identifiers and basic profile information used for sign-in</li>
         <li>Team and room identifiers and names, membership, roles, host status, and presence</li>
         <li>Device identifiers, registered public keys, and public-key fingerprints</li>
-        <li>The selected local project path string, which may reveal directory or user names, selected model identifiers, and certain room configuration values</li>
         <li>Invite identifiers, expiration data, and other invite metadata</li>
         <li>Encrypted event types, sender and device identifiers, timestamps, key epochs, and ciphertext sizes</li>
         <li>Encrypted attachment blobs; plaintext filename, MIME type, size, and routing metadata; and operational counters</li>
-        <li>For GitHub operations you request, transient pull-request fields and Actions run metadata that the relay forwards without adding them to persistent relay state or logs</li>
       </ul>
-      <p>Your GitHub and device display identity, role, presence, and public device keys are visible to authorized teammates where the roster and room workflow require them. Except for content you deliberately put in a GitHub operation field, the relay is designed not to receive plaintext room messages, attachment contents, project files, file diffs, terminal output, browser contents, Codex credentials, OpenAI credentials, or MLS secrets. GitHub access tokens remain relay-side and are encrypted before persistent storage when the relay has a strong session secret.</p>
+      <p>Your GitHub and device display identity, role, presence, and public device keys are visible to authorized teammates where the roster and room workflow require them. The relay is designed not to receive plaintext room messages, attachment contents, project paths or files, model configuration, file diffs, terminal output, browser contents, Codex credentials, OpenAI credentials, or MLS secrets. The native app keeps the GitHub token in macOS Keychain; the relay sees it once over TLS for identity verification and discards it.</p>
       <p>This is an intended and tested architecture boundary, not an independently audited guarantee. The detailed inventory is in the <a href={`${docsUrl}/threat-model.md`}>threat model</a>.</p>
     </>,
   },
@@ -119,7 +117,7 @@ const faqs = [
     question: "Why GitHub-only sign-in?",
     answer: <>
       <p>GitHub currently serves two related purposes: room identity and the built-in GitHub workflow.</p>
-      <p>The relay uses GitHub device-code OAuth to identify users and scope team and room metadata. The official alpha requests access to public and private repositories. The same relay-side session supports repository operations, draft pull request creation, and GitHub Actions status without exposing the access token to desktop clients. Using one provider keeps the alpha’s identity, authorization, PR, and Actions surfaces small enough to review and operate.</p>
+      <p>The native app uses GitHub device-code OAuth for room identity and the repository workflow. The official alpha requests access to public and private repositories. The token stays in native Keychain custody; Git operations use the host’s existing credentials, and pull-request creation and Actions reads go directly from the native app to GitHub. The relay receives the token only once over TLS to verify the signed-in identity, then discards it.</p>
       <p>GitHub-only sign-in is an alpha scope decision. Other identity providers and a GitHub App model are possible future directions, but neither is committed for the initial alpha. A private local or LAN relay can explicitly disable authentication, but that mode is not appropriate for an internet-facing relay.</p>
     </>,
   },
@@ -136,7 +134,8 @@ const faqs = [
     category: "Architecture and operations",
     question: "Can I self-host the relay, and why does a custom relay URL require rebuilding the desktop app?",
     answer: <>
-      <p>Yes. The relay is open source and can be self-hosted. An internet-facing deployment should use HTTPS and WSS, exact allowed origins, GitHub authentication, persistent SQLite storage, durable session encryption, rate limits, quotas, backups, health checks, monitoring, and the included production-relay doctor.</p>
+      <p>Yes. The relay is open source and deliberately single-node: one process owns SQLite, presence, and WebSocket fan-out. An internet-facing deployment must keep the Node listener private behind a trusted HTTPS/WSS reverse proxy or WAF with IP-level protections, and should use exact allowed origins, GitHub authentication, durable sessions and quotas, backups, health checks, monitoring, and the included production-relay doctor.</p>
+      <p>Do not run multiple relay processes against one store. Scale by sharding complete teams across independent relays. The operator can durably restrict an abusive account with the stopped-relay administration command; there is no internet-facing admin endpoint.</p>
       <p>Official desktop builds pin hosted relay endpoints and restrict network access through the Tauri application Content Security Policy. They do not permit arbitrary HTTPS or WebSocket destinations. This prevents a compromised setting, injected page, or casual configuration change from redirecting the trusted desktop shell to an unexpected server.</p>
       <p>A custom relay therefore requires a self-built desktop whose allowed origins are included at build time. See the <a href={`${docsUrl}/self-hosting.md`}>self-hosting guide</a>.</p>
     </>,
@@ -149,11 +148,11 @@ const faqs = [
       <p>The relay holds routing and membership state, encrypted backlog, encrypted attachment blobs, invites, and sessions. Migration recreates teams, rooms, memberships, sessions, and invites. It does not automatically transfer hosted backlog or attachment blobs, and a destination relay cannot reconstruct device-local keys or history.</p>
       <ul>
         <li>Keep normal project and Git backups and push important branches</li>
-        <li>Export important conversations to Markdown and save important attachments</li>
+        <li>Export room display history to a passphrase-encrypted age archive and save important attachments</li>
         <li>Keep every device that contains needed MLS state and encrypted history</li>
         <li>Test self-hosting before an emergency</li>
       </ul>
-      <p>Planned hosted-relay shutdowns provide at least 30 days of public notice when safely possible. Read <a href={`${docsUrl}/if-unmaintained.md`}>If this project goes unmaintained</a> for the complete exit path.</p>
+      <p>The encrypted archive can be imported later as a read-only library without signing in or reconnecting to a relay. It intentionally excludes MLS secrets, device credentials, pending approvals, and host authority. Planned hosted-relay shutdowns provide at least 30 days of public notice when safely possible. Read <a href={`${docsUrl}/if-unmaintained.md`}>If this project goes unmaintained</a> for the complete exit path.</p>
     </>,
   },
   {

@@ -35,6 +35,8 @@ test("marketing surfaces use sanitized current product content", async () => {
   assert.match(home, /install cloudflared/);
   assert.match(home, /relay never proxies the preview/);
   assert.match(home, /current Git working tree/);
+  assert.match(home, /passphrase-encrypted age archive/);
+  assert.match(home, /deliberately single-node/);
   assert.match(social, /APPLE SILICON/);
   assert.match(social, /macOS 11 or later/);
   assert.match(manifest, /"version": "0\.0\.0"/);

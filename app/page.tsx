@@ -26,6 +26,11 @@ const features = [
     title: "From Codex to pull request",
     copy: "Follow structured Codex work, review the current Git working tree, create a branch, commit, push, open a draft PR, and watch GitHub Actions without losing the room’s context.",
   },
+  {
+    number: "05",
+    title: "Take the room with you",
+    copy: "Export display history as a passphrase-encrypted age archive and reopen it later as a read-only library—even while signed out or disconnected. Live keys and authority are never exported.",
+  },
 ];
 
 const trustItems = [
@@ -50,7 +55,7 @@ const faqs = [
   },
   {
     q: "Can I self-host the relay?",
-    a: "Yes. The relay is open source and can be self-hosted. The free official relay is intended to provide the easiest first run when it is deployed and available, but it has no uptime or continuity guarantee.",
+    a: "Yes. The relay is deliberately single-node: one process owns SQLite and WebSocket fan-out behind a trusted TLS reverse proxy or WAF. Scale by placing complete teams on separate relays, not by running multiple processes against one store. The official alpha has no uptime or continuity guarantee.",
   },
   {
     q: "What platforms are supported?",
