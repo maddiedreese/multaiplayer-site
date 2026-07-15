@@ -22,8 +22,10 @@ test("published policies contain the required identity, date, platform, hosting,
     "Railway",
     "public and private repositories",
   ]) assert.ok(policies.includes(fact), `missing required policy fact: ${fact}`);
-  assert.match(privacy, /title, body, head branch, and base branch/);
-  assert.match(privacy, /does not add these proxy request or response bodies to its persistent relay state or logs/);
+  assert.match(privacy, /access token stays behind the native Rust boundary and is stored in macOS Keychain/);
+  assert.match(privacy, /Pull-request creation and Actions reads go directly from the native desktop app/);
+  assert.match(privacy, /relay calls GitHub’s user endpoint to verify the identity.*discards the token/s);
+  assert.match(privacy, /host-local project paths and Codex model configuration.*encrypted/s);
   assert.match(privacy, /shown as needed to authorized teammates/);
   assert.match(privacy, /We will never ask you for a complete invite link or fragment/);
   assert.match(privacy, /separate Railway object-storage bucket outside the relay database and its backup set/);

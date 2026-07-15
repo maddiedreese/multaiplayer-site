@@ -26,7 +26,7 @@ export default function TermsPage() {
 
       <section>
         <h2>3. GitHub, Codex, repositories, and third parties</h2>
-        <p>A GitHub account is required for the official relay. The alpha requests GitHub’s broad <code>repo</code> scope for public and private repositories, plus <code>read:user</code>, so it can perform repository API, pull-request, and Actions operations you initiate. Local Git commands and pushes may separately use credentials available on the active host. Hosting a Codex room requires your own eligible Codex access. You authorize us to send the GitHub API requests you select and to process the repository metadata and credentials needed to do so.</p>
+        <p>A GitHub account is required for the official relay. The alpha requests GitHub’s broad <code>repo</code> scope for public and private repositories, plus <code>read:user</code>, so the native desktop app can perform repository API, pull-request, and Actions operations you initiate directly with GitHub. Local Git commands and pushes separately use credentials available on the active host. Hosting a Codex room requires your own eligible Codex access. You authorize the app to send the GitHub API requests you select and authorize the relay to verify your GitHub identity once at sign-in.</p>
         <p>You must have permission to access and share every repository, file, account, prompt, attachment, and other material you use. GitHub, OpenAI/Codex, Railway, Netlify, Git remotes, websites, package registries, tunnel providers, and other third parties have their own terms and may change or discontinue their services. multAIplayer is independent and is not affiliated with, endorsed by, or sponsored by OpenAI.</p>
       </section>
 
