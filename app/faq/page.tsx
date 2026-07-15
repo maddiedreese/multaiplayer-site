@@ -35,7 +35,7 @@ const faqs = [
     category: "Trust and security",
     question: "How does room encryption work, and is it audited?",
     answer: <>
-      <p>Protocol v2 uses RFC 9420 Messaging Layer Security concepts through the Rust <code>mls-rs</code> implementation. Devices hold MLS state and secrets locally, publish MLS PrivateMessages through the relay, and use signed KeyPackages, Add commits, and Welcome messages for membership changes.</p>
+      <p>Protocol v2 uses RFC 9420 MLS via the Rust <code>mls-rs</code> implementation; multAIplayer&apos;s integration layer is unaudited. Devices hold MLS state and secrets locally, publish MLS PrivateMessages through the relay, and use signed KeyPackages, Add commits, and Welcome messages for membership changes.</p>
       <p>The relay routes and persists ciphertext plus the metadata needed for authorization, delivery, replay protection, limits, and operations. It does not receive MLS epoch secrets. Removing a member advances the group epoch so that the removed device cannot decrypt later messages, but it cannot erase content or keys the device already received.</p>
       <p>The multAIplayer integration and product have not been independently audited. Using a maintained MLS implementation reduces custom cryptographic surface but is not a blanket security guarantee. Protocol v2 is intentionally incompatible with legacy pre-v2 rooms and invitations. Read the <a href={`${docsUrl}/cryptography.md`}>cryptography architecture</a> and <a href={`${docsUrl}/threat-model.md`}>threat model</a>.</p>
     </>,
@@ -53,7 +53,7 @@ const faqs = [
         <li>Encrypted event types, sender and device identifiers, timestamps, key epochs, and ciphertext sizes</li>
         <li>Encrypted attachment blobs; plaintext filename, MIME type, size, and routing metadata; and operational counters</li>
       </ul>
-      <p>Your GitHub and device display identity, role, presence, and public device keys are visible to authorized teammates where the roster and room workflow require them. The relay is designed not to receive plaintext room messages, attachment contents, project paths or files, model configuration, file diffs, terminal output, browser contents, Codex credentials, OpenAI credentials, or MLS secrets. The native app keeps the GitHub token in macOS Keychain; the relay sees it once over TLS for identity verification and discards it.</p>
+      <p>Your GitHub and device display identity, role, presence, and public device keys are visible to authorized teammates where the roster and room workflow require them. The relay is designed not to receive plaintext room messages, attachment contents, project paths, model configuration, project files, file diffs, terminal output, browser contents, GitHub operation fields, Codex credentials, OpenAI credentials, or MLS secrets. GitHub access tokens remain in the native operating-system credential store; the relay observes a token only during sign-in identity verification and immediately discards it.</p>
       <p>This is an intended and tested architecture boundary, not an independently audited guarantee. The detailed inventory is in the <a href={`${docsUrl}/threat-model.md`}>threat model</a>.</p>
     </>,
   },
@@ -81,7 +81,7 @@ const faqs = [
     question: "Has the encryption been audited?",
     answer: <>
       <p>No. The cryptographic protocol and implementation have not received an independent professional security audit.</p>
-      <p>The repository includes documented protocol boundaries, canonical encodings, public test vectors, an independent Python vector verifier, property tests, mutation tests, malformed-input tests, key-rotation tests, invite-binding tests, downgrade rejection, and a public threat-model changelog. Those controls improve reviewability and catch regressions. They do not replace an independent audit.</p>
+      <p>The repository includes documented protocol boundaries, generated MLS lifecycle tests, RFC 9180 HPKE known-answer evidence, scheduled native and relay fuzzing, focused relay-authorization mutation testing, malformed-input and invite-binding tests, downgrade rejection, and public threat-model history. Those controls improve reviewability and catch regressions. They do not replace an independent audit.</p>
       <p>Cryptographers and protocol reviewers can start with the <a href={`${docsUrl}/external-review-packet.md`}>external review packet</a> and report findings through <a href={`${githubUrl}/security/advisories/new`}>private vulnerability reporting</a>.</p>
     </>,
   },
