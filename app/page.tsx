@@ -174,7 +174,7 @@ export default function Home() {
           <div className="section-kicker"><span>03</span> Private by design</div>
           <h2>Your relay moves the room.<br />It doesn’t read the work.</h2>
           <p>Room content is encrypted on devices. Powerful local capabilities remain with the host who owns the machine, project, accounts, and approvals.</p>
-          <p>Room content uses an MLS-based protocol backed by the Rust <code>mls-rs</code> implementation. The integration and product have not been independently audited; end-to-end encryption is an intended and tested boundary, not an independently verified guarantee.</p>
+          <p>Room content uses RFC 9420 MLS via the Rust <code>mls-rs</code> implementation; multAIplayer&apos;s integration layer is unaudited. End-to-end encryption is an intended and tested boundary, not an independently verified guarantee.</p>
           <ul>
             {trustItems.map((item) => <li key={item}><span>✓</span>{item}</li>)}
           </ul>
