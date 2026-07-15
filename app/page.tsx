@@ -37,6 +37,7 @@ const trustItems = [
   { label: "Security boundaries, exclusions, and residual risks", href: `${githubUrl}/blob/main/docs/threat-model.md` },
   { label: "Protocol and key lifecycle mechanics", href: `${githubUrl}/blob/main/docs/cryptography.md` },
   { label: "Test evidence and open review questions", href: `${githubUrl}/blob/main/docs/external-review-packet.md` },
+  { label: "Updater public-key fingerprint", href: "/security/updater-key" },
   { label: "Private vulnerability reports", href: `${githubUrl}/security/advisories/new` },
 ];
 
@@ -48,6 +49,10 @@ const faqs = [
   {
     q: "Is multAIplayer an OpenAI or Codex product?",
     a: "No. multAIplayer is an independent open-source project and is not affiliated with, endorsed by, or sponsored by OpenAI. The OpenAI and Codex names belong to OpenAI.",
+  },
+  {
+    q: "Does multAIplayer give Codex custom instructions?",
+    a: "No. multAIplayer connects to the standard open-source Codex app-server on the active host; it does not replace Codex’s system or developer instructions or ship a custom Codex prompt. For an approved turn, it formats selected room conversation and attachments as ordinary turn input and labels teammate, file, terminal, browser, and tool material as untrusted context.",
   },
   {
     q: "Is multAIplayer free and open source?",
@@ -105,7 +110,7 @@ export default function Home() {
             <div><strong>Host a room</strong><span>Codex account + active subscription required</span></div>
             <div><strong>Sign in</strong><span>GitHub account required</span></div>
           </div>
-          <p className="hero-note">Built on the open-source Codex app-server · Self-hostable relay · Made by <a href="https://x.com/maddiedreese">@maddiedreese ↗</a></p>
+          <p className="hero-note">Standard open-source Codex app-server · No replacement system or developer instructions · Self-hostable relay · Made by <a href="https://x.com/maddiedreese">@maddiedreese ↗</a></p>
           <aside className="hero-disclaimer">
             <strong>Independent open-source project</strong>
             <span>multAIplayer is an independent open-source project and is not affiliated with, endorsed by, or sponsored by OpenAI. The OpenAI and Codex names belong to OpenAI.</span>
@@ -248,7 +253,7 @@ export default function Home() {
         <div className="footer-links">
           <div><strong>Product</strong><a href="#how-it-works">How it works</a><Link href="/faq">FAQ</Link>{supportedMacDownload ? <a href={supportedMacDownload.url}>Download</a> : <span className="release-unavailable">Signed download pending</span>}<Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div>
           <div><strong>Project</strong><a href={githubUrl}>GitHub</a><a href={`${githubUrl}/blob/main/docs/using-the-app.md`}>Documentation</a><a href={`${githubUrl}/issues`}>Issues</a></div>
-          <div><strong>Trust</strong><a href={`${githubUrl}/blob/main/SECURITY.md`}>Security</a><a href={`${githubUrl}/blob/main/docs/alpha-limitations.md`}>Alpha limitations</a><a href={`${githubUrl}/blob/main/docs/if-unmaintained.md`}>Project continuity</a><a href={`${githubUrl}/blob/main/LICENSE`}>License</a></div>
+          <div><strong>Trust</strong><a href={`${githubUrl}/blob/main/SECURITY.md`}>Security</a><Link href="/security/updater-key">Updater key</Link><a href={`${githubUrl}/blob/main/docs/alpha-limitations.md`}>Alpha limitations</a><a href={`${githubUrl}/blob/main/docs/if-unmaintained.md`}>Project continuity</a><a href={`${githubUrl}/blob/main/LICENSE`}>License</a></div>
         </div>
         <p className="independence-note">multAIplayer is an independent open-source project and is not affiliated with, endorsed by, or sponsored by OpenAI. The OpenAI and Codex names belong to OpenAI.</p>
         <div className="footer-bottom"><span>© {new Date().getFullYear()} multAIplayer</span><span>Open source under Apache-2.0</span><span className="footer-status"><i /> Alpha release pending</span></div>
