@@ -8,8 +8,9 @@ import { socialCardSvg } from "../scripts/generate-social-card.mjs";
 const source = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("marketing surfaces use sanitized current product content", async () => {
-  const [home, preview, manifest, invite, social] = await Promise.all([
+  const [home, faq, preview, manifest, invite, social] = await Promise.all([
     source("app/page.tsx"),
+    source("app/faq/page.tsx"),
     source("app/components/ProductRoomPreview.tsx"),
     source("public/releases/latest.json"),
     source("app/invite/InviteLanding.tsx"),
@@ -37,6 +38,11 @@ test("marketing surfaces use sanitized current product content", async () => {
   assert.match(home, /current Git working tree/);
   assert.match(home, /passphrase-encrypted age archive/);
   assert.match(home, /deliberately single-node/);
+  assert.match(home, /threat model is the sole normative source/);
+  assert.match(faq, /threat model and architecture decisions remain authoritative/);
+  assert.match(home, /docs\/threat-model\.md/);
+  assert.match(faq, /threat-model\.md/);
+  assert.doesNotMatch(home, /Plaintext stays on participating devices/);
   assert.match(social, /APPLE SILICON/);
   assert.match(social, /macOS 11 or later/);
   assert.match(manifest, /"version": "0\.0\.0"/);

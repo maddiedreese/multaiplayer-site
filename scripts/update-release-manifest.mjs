@@ -47,6 +47,10 @@ export function manifestFromReleases(releases) {
 
 const trustedReleaseAssetNames = [
   "multAIplayer-macos-arm64-app.zip",
+  "multAIplayer-macos-arm64.app.tar.gz",
+  "multAIplayer-macos-arm64.app.tar.gz.sig",
+  "latest.json",
+  "desktop-reproducibility-evidence.zip",
   "SHA256SUMS.txt",
   "multaiplayer.spdx.json",
   "SHA256SUMS.txt.sigstore.json",
@@ -55,8 +59,7 @@ const trustedReleaseAssetNames = [
 
 function trustedReleaseDiskImage(release) {
   const assets = Array.isArray(release?.assets) ? release.assets : [];
-  const names = new Set(assets.map((asset) => asset?.name).filter((name) => typeof name === "string"));
-  if (!trustedReleaseAssetNames.every((name) => names.has(name))) return null;
+  if (!trustedReleaseAssetNames.every((name) => assets.filter((asset) => asset?.name === name).length === 1)) return null;
   const diskImages = assets.filter((asset) =>
     typeof asset?.name === "string" &&
     asset.name.toLowerCase().endsWith(".dmg") &&

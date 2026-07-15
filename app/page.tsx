@@ -34,10 +34,10 @@ const features = [
 ];
 
 const trustItems = [
-  "Room messages and attachments are encrypted before they reach the relay.",
-  "Codex and OpenAI credentials stay on the active host’s machine.",
-  "Project files, terminal output, and browser contents are not stored as relay plaintext.",
-  "Local actions remain governed by the active host’s approval settings and native safety controls.",
+  { label: "Security boundaries, exclusions, and residual risks", href: `${githubUrl}/blob/main/docs/threat-model.md` },
+  { label: "Protocol and key lifecycle mechanics", href: `${githubUrl}/blob/main/docs/cryptography.md` },
+  { label: "Test evidence and open review questions", href: `${githubUrl}/blob/main/docs/external-review-packet.md` },
+  { label: "Private vulnerability reports", href: `${githubUrl}/security/advisories/new` },
 ];
 
 const faqs = [
@@ -172,16 +172,11 @@ export default function Home() {
       <section className="privacy section-light" id="privacy">
         <div className="privacy-copy">
           <div className="section-kicker"><span>03</span> Private by design</div>
-          <h2>Your relay moves the room.<br />It doesn’t read the work.</h2>
-          <p>Room content is encrypted on devices. Powerful local capabilities remain with the host who owns the machine, project, accounts, and approvals.</p>
-          <p>Room content uses RFC 9420 MLS via the Rust <code>mls-rs</code> implementation; multAIplayer&apos;s integration layer is unaudited. End-to-end encryption is an intended and tested boundary, not an independently verified guarantee.</p>
+          <h2>Review the trust boundaries.<br />Then decide what fits.</h2>
+          <p>Room cryptography uses RFC 9420 MLS through <code>mls-rs</code>; the multAIplayer integration is unaudited. The repository threat model is the sole normative source for security claims, evidence, exclusions, and residual risks.</p>
           <ul>
-            {trustItems.map((item) => <li key={item}><span>✓</span>{item}</li>)}
+            {trustItems.map((item) => <li key={item.href}><span>→</span><a href={item.href}>{item.label}</a></li>)}
           </ul>
-          <div className="trust-links">
-            <a className="text-link" href={`${githubUrl}/blob/main/docs/threat-model.md`}>Read the threat model <span>↗</span></a>
-            <a className="text-link" href={`${githubUrl}/blob/main/docs/external-review-packet.md`}>External review packet <span>↗</span></a>
-          </div>
         </div>
         <div className="privacy-visual">
           <div className="privacy-diagram" aria-label="Encrypted relay architecture diagram">
@@ -193,7 +188,7 @@ export default function Home() {
             <div className="route route-a"><i /><i /><i /></div>
             <div className="route route-b"><i /><i /><i /></div>
             <div className="route route-c"><i /><i /><i /></div>
-            <p>Plaintext stays on participating devices</p>
+            <p>Normative data-flow details: threat model</p>
           </div>
           <div className="local-boundary"><span>HOST MACHINE</span><div>Project</div><div>Codex</div><div>Terminal</div><div>Browser</div></div>
         </div>
