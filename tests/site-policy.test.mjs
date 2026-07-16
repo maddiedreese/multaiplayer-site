@@ -66,4 +66,5 @@ test("website contains no analytics dependency and invite policy prevents fragme
     assert.ok(headers.includes(directive), `missing invite control: ${directive}`);
   }
   assert.match(readme, /never puts the capability in HTML, storage, cookies, analytics, telemetry, or the clipboard/i);
+  assert.doesNotMatch(`${await source("app/invite/page.tsx")}\n${await source("app/invite/InviteLanding.tsx")}`, /capabilities stay on this device|sends it only when/i);
 });

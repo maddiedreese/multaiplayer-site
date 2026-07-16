@@ -1,8 +1,7 @@
 {
+  "schemaVersion": 1,
+  "releaseAssetSet": "macos-arm64-v1",
   "version": "0.0.0",
-  "url": "https://multaiplayer.com",
-  "notes": "No supported desktop release has been published.",
-  "security": false,
   "supported": false,
   "downloads": {}
 }

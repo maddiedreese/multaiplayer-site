@@ -55,7 +55,15 @@ test("marketing surfaces use sanitized current product content", async () => {
   assert.match(social, /APPLE SILICON/);
   assert.match(social, /macOS 11 or later/);
   assert.match(manifest, /"version": "0\.0\.0"/);
-  assert.match(manifest, /No supported desktop release has been published/);
+  assert.match(manifest, /"schemaVersion": 1/);
+  assert.match(manifest, /"releaseAssetSet": "macos-arm64-v1"/);
+  assert.deepEqual(JSON.parse(manifest), {
+    schemaVersion: 1,
+    releaseAssetSet: "macos-arm64-v1",
+    version: "0.0.0",
+    supported: false,
+    downloads: {},
+  });
 });
 
 test("generated social card is the expected share-image size", async () => {

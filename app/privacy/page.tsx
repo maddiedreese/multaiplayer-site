@@ -14,7 +14,7 @@ export default function PrivacyPage() {
 
       <section>
         <h2>1. Who is responsible</h2>
-        <p>{companyName} operates the website and is responsible for the official hosted relay when that service is deployed and available. Contact us at <a href={`mailto:${contactEmail}`}>{contactEmail}</a> or by mail at {mailingAddress}.</p>
+        <p>{companyName} operates the website and the official hosted relay. Contact us at <a href={`mailto:${contactEmail}`}>{contactEmail}</a> or by mail at {mailingAddress}.</p>
       </section>
 
       <section>
@@ -44,7 +44,7 @@ export default function PrivacyPage() {
           <li>rate-limit and quota counters, connection and health metrics, and bounded operational and security logs.</li>
         </ul>
         <p>Your GitHub login and display identity, device display name, device identifiers, public keys and fingerprints, presence, and team role are shown as needed to authorized teammates in shared room and device-roster views.</p>
-        <p>The official relay is designated to run on Railway with persistent storage when the hosted service is available. The website is hosted by Netlify. These providers process infrastructure data on our behalf. We may also use GitHub for source code, releases, authentication, and user-requested repository operations.</p>
+        <p>The official relay runs on Railway with persistent storage. The website is hosted by Netlify. These providers process infrastructure data on our behalf. We may also use GitHub for source code, releases, authentication, and user-requested repository operations. The free alpha has no uptime or continuity guarantee.</p>
       </section>
 
       <section>
