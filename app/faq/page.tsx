@@ -25,8 +25,8 @@ const faqs = [
   },
   {
     category: "Product",
-    question: "Does multAIplayer customize Codex's instructions?",
-    answer: <p>No. The app uses the standard open-source Codex app-server on the active host and does not replace Codex&apos;s system or developer instructions or ship a custom Codex prompt. Approved room context is sent as ordinary turn input with untrusted material explicitly labeled.</p>,
+    question: "Does multAIplayer replace Codex's system or developer instructions?",
+    answer: <p>No. The app uses the standard open-source Codex app-server on the active host. For an approved turn, it constructs a bounded ordinary user-turn prompt from attributed room conversation and selected context, with product-authored safety framing that explicitly labels untrusted material.</p>,
   },
   {
     category: "Trust",
