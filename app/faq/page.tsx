@@ -31,7 +31,7 @@ const faqs = [
   {
     category: "Trust",
     question: "How are rooms encrypted, and has this been audited?",
-    answer: <p>The mechanism uses RFC 9420 MLS through <code>mls-rs</code>, with native-client encryption and exporter-derived protection for relevant payloads. The integration has not received an independent professional security audit. The <a href={`${docsUrl}/threat-model.md`}>threat model</a> is the sole normative claims source; reviewers can use the <a href={`${docsUrl}/external-review-packet.md`}>external review packet</a>.</p>,
+    answer: <p>The mechanism uses RFC 9420 MLS through <code>mls-rs</code>, with native-client encryption and exporter-derived protection for relevant payloads. The integration has not received an independent professional security audit. The <a href={`${docsUrl}/threat-model.md`}>threat model</a> is the sole normative claims source; reviewers can use the <a href={`${docsUrl}/design/external-review-packet.md`}>external review packet</a>.</p>,
   },
   {
     category: "Trust",

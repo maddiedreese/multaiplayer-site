@@ -45,6 +45,13 @@ test("every public website surface links both policies", async () => {
   }
 });
 
+test("public review links target the maintained design packet", async () => {
+  const [home, faq] = await Promise.all([source("app/page.tsx"), source("app/faq/page.tsx")]);
+  assert.match(home, /docs\/design\/external-review-packet\.md/);
+  assert.match(faq, /\$\{docsUrl\}\/design\/external-review-packet\.md/);
+  assert.doesNotMatch(`${home}\n${faq}`, /docs\/external-review-packet\.md/);
+});
+
 test("website contains no analytics dependency and invite policy prevents fragment disclosure", async () => {
   const [manifest, inviteScript, headers, readme] = await Promise.all([
     source("package.json"),
