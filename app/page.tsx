@@ -36,7 +36,7 @@ const features = [
 const trustItems = [
   { label: "Security boundaries, exclusions, and residual risks", href: `${githubUrl}/blob/main/docs/threat-model.md` },
   { label: "Protocol and key lifecycle mechanics", href: `${githubUrl}/blob/main/docs/cryptography.md` },
-  { label: "Test evidence and open review questions", href: `${githubUrl}/blob/main/docs/external-review-packet.md` },
+  { label: "Test evidence and open review questions", href: `${githubUrl}/blob/main/docs/design/external-review-packet.md` },
   { label: "Updater public-key fingerprint", href: "/security/updater-key" },
   { label: "Private vulnerability reports", href: `${githubUrl}/security/advisories/new` },
 ];
