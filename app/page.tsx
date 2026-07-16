@@ -45,15 +45,15 @@ const trustItems = [
 const faqs = [
   {
     q: "What accounts do I need?",
-    a: "A GitHub account is required to sign in. To host a room, you also need a ChatGPT account with Codex access and an active plan or subscription. multAIplayer uses the host’s local Codex session, so no separate OpenAI API key is required.",
+    a: "A GitHub account is required to sign in. To host a room, you also need a ChatGPT account with Codex access. multAIplayer uses the host’s local Codex session, so no separate OpenAI API key is required; a separate paid ChatGPT plan or subscription may still be required for that access.",
   },
   {
     q: "Is multAIplayer an OpenAI or Codex product?",
     a: "No. multAIplayer is an independent open-source project and is not affiliated with, endorsed by, or sponsored by OpenAI. The OpenAI and Codex names belong to OpenAI.",
   },
   {
-    q: "Does multAIplayer give Codex custom instructions?",
-    a: "No. multAIplayer connects to the standard open-source Codex app-server on the active host; it does not replace Codex’s system or developer instructions or ship a custom Codex prompt. For an approved turn, it formats selected room conversation and attachments as ordinary turn input and labels teammate, file, terminal, browser, and tool material as untrusted context.",
+    q: "Does multAIplayer replace Codex’s system or developer instructions?",
+    a: "No. multAIplayer connects to the standard open-source Codex app-server on the active host. For an approved turn, it constructs a bounded ordinary user-turn prompt from attributed room conversation and selected context, with product-authored safety framing that labels teammate, file, terminal, browser, and tool material as untrusted.",
   },
   {
     q: "Is multAIplayer free and open source?",
@@ -108,7 +108,7 @@ export default function Home() {
             <a className="button button-secondary" href={githubUrl}>View on GitHub <span>↗</span></a>
           </div>
           <div className="hero-requirements" aria-label="Account requirements">
-            <div><strong>Host a room</strong><span>Codex account + active subscription required</span></div>
+            <div><strong>Host a room</strong><span>ChatGPT account with Codex access required</span></div>
             <div><strong>Sign in</strong><span>GitHub account required</span></div>
           </div>
           <p className="hero-note">Self-hostable relay · Made by <a href="https://x.com/maddiedreese">@maddiedreese ↗</a></p>
@@ -242,7 +242,7 @@ export default function Home() {
         <p>{supportedMacDownload ? "Download the signed alpha for an Apple silicon Mac running macOS 11 or later." : "The first signed download for Apple silicon Macs running macOS 11 or later has not been published yet."}</p>
         {supportedMacDownload ? <a className="button button-primary button-large" href={supportedMacDownload.url}>Download for Apple silicon <span>↗</span></a> : <span className="button button-primary button-large release-unavailable" aria-disabled="true">Signed download not yet published</span>}
         <small>Completely free and open source · GitHub account required to sign in</small>
-        <small>Hosting requires a Codex account with an active subscription</small>
+        <small>Hosting requires a ChatGPT account with Codex access</small>
       </section>
 
       <footer>
