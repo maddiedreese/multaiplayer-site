@@ -20,10 +20,7 @@ export function assertCanonicalAssetContract(canonical, vendored) {
     schemaVersion: value?.schemaVersion,
     requiredExactNames: value?.requiredExactNames,
     requiredNamePatterns: value?.requiredNamePatterns,
-    buildOutputExactNames: value?.buildOutputExactNames,
-    publishGeneratedExactNames: value?.publishGeneratedExactNames,
     checksumManifest: value?.checksumManifest,
-    artifactSbom: value?.artifactSbom,
   });
   if (JSON.stringify(relevant(canonical)) !== JSON.stringify(relevant(vendored))) {
     throw new Error("The website release asset contract does not match the application repository.");

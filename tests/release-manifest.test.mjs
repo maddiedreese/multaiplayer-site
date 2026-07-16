@@ -14,15 +14,10 @@ const diskImage = {
 const trustedAssets = [
   diskImage,
   ...[
-    "multAIplayer-macos-arm64-app.zip",
     "multAIplayer-macos-arm64.app.tar.gz",
     "multAIplayer-macos-arm64.app.tar.gz.sig",
     "latest.json",
-    "desktop-reproducibility-evidence.zip",
     "SHA256SUMS.txt",
-    "multaiplayer.spdx.json",
-    "SHA256SUMS.txt.sigstore.json",
-    "multaiplayer.spdx.json.sigstore.json",
   ].map((name) => ({ name })),
 ];
 
@@ -155,7 +150,7 @@ test("rejects malformed, mismatched, and untrusted manifest data at runtime", ()
   assert.throws(() => parseReleaseManifest({ ...supported, downloads: { macos: { ...supported.downloads.macos, url: "https://github.com/other/maddiedreese/multAIplayer/releases/download/v1.0.0/multAIplayer_1.0.0_aarch64.dmg" } } }), /origin/);
 });
 
-test("requires the complete trusted workflow asset set and official download origin", () => {
+test("requires the signed release files and official download origin", () => {
   const release = { draft: false, tag_name: "v0.1.0", html_url: "https://example.com", assets: [] };
   assert.equal(manifestFromReleases([release]).supported, false);
   assert.equal(manifestFromReleases([{ ...release, assets: [diskImage, diskImage, ...trustedAssets.slice(1)] }]).supported, false);

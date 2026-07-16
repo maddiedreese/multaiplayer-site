@@ -2,7 +2,7 @@
 
 The public website for [multAIplayer](https://github.com/maddiedreese/multAIplayer), a private group chat for building with Codex together.
 
-The site publishes the service [Privacy Policy](https://multaiplayer.com/privacy) and [Terms of Service](https://multaiplayer.com/terms). Their effective date, operator identity, platform support, hosted-service behavior, and data inventory are contract-tested in `tests/site-policy.test.mjs`. Update the policies whenever the relay, authentication scopes, retention, deletion behavior, subprocess boundaries, infrastructure providers, or supported platform changes.
+The site publishes the service [Privacy Policy](https://multaiplayer.com/privacy) and [Terms of Service](https://multaiplayer.com/terms). Review both whenever the relay, authentication scopes, retention, deletion behavior, subprocess boundaries, infrastructure providers, or supported platform changes. Automated checks cover routing and security behavior; they do not substitute for reviewing public claims and legal text.
 
 The source is licensed under [Apache-2.0](LICENSE). See [CONTRIBUTING.md](CONTRIBUTING.md) for change and verification guidance, [SECURITY.md](SECURITY.md) for private vulnerability reporting, and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations.
 
@@ -41,7 +41,7 @@ Before releasing a desktop build, verify that both live association files contai
 
 ## Release manifest
 
-The website checks the application repository for non-draft GitHub Releases, including prereleases, and selects the greatest valid SemVer that contains the complete trusted release-workflow asset set. GitHub creation order cannot make the manifest regress to a lower version. The site publishes `https://multaiplayer.com/releases/latest.json` for website download surfaces. The desktop uses the separately signed Tauri manifest on the application repository's pinned `update-channel` branch; the website manifest is not an updater trust root.
+The website checks the application repository for non-draft GitHub Releases, including prereleases, and selects the greatest valid SemVer containing the signed updater files, checksums, and exactly one digested Apple-silicon DMG. GitHub creation order cannot make the manifest regress to a lower version. The site publishes `https://multaiplayer.com/releases/latest.json` for website download surfaces. The desktop uses the separately signed Tauri manifest on the application repository's pinned `update-channel` branch; the website manifest is not an updater trust root.
 
 Run the updater locally with:
 
