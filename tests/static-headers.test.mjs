@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { inlineScriptHashes, inviteHeaders } from "../scripts/generate-static-headers.mjs";
+import { inlineScriptHashes, inviteHeaders, siteHeaders } from "../scripts/generate-static-headers.mjs";
 
 test("hashes inline scripts exactly and produces a closed invitation CSP", () => {
   const hashes = inlineScriptHashes('<script src="/external.js"></script><script>scrub()</script><script>hydrate()</script>');
@@ -16,6 +16,19 @@ test("hashes inline scripts exactly and produces a closed invitation CSP", () =>
 
 test("refuses to emit a CSP without an inline-script inventory", () => {
   assert.throws(() => inviteHeaders([]), /at least one hashed inline script/);
+  assert.throws(() => siteHeaders([]), /at least one hashed inline script/);
+});
+
+test("site-wide policy closes unused capabilities and enables transport protection", () => {
+  const headers = siteHeaders(["'sha256-example'"]);
+  for (const control of [
+    "default-src 'none'",
+    "connect-src 'none'",
+    "frame-ancestors 'none'",
+    "Strict-Transport-Security: max-age=31536000; includeSubDomains",
+    "Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+  ]) assert.match(headers, new RegExp(control.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.doesNotMatch(headers, /unsafe-inline|unsafe-eval/);
 });
 
 test("site-wide headers cannot override invitation no-referrer policy", async () => {

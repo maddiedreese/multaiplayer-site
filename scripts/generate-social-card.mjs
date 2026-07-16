@@ -1,9 +1,11 @@
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import sharp from "sharp";
+import { parseReleaseManifest } from "../lib/release-contract.mjs";
 
 const outputUrl = new URL("../public/og.png", import.meta.url);
 
-export function socialCardSvg() {
+export function socialCardSvg(manifest = { supported: false, version: "0.0.0" }) {
+  const releaseLabel = manifest.supported ? `ALPHA ${manifest.version} AVAILABLE` : "SIGNED ALPHA PENDING";
   return `
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
@@ -31,7 +33,7 @@ export function socialCardSvg() {
   <text x="57" y="398" font-size="18" class="muted">working with Codex on one shared project.</text>
   <rect x="56" y="436" width="308" height="52" rx="8" fill="none" stroke="#b99a48"/>
   <circle cx="80" cy="462" r="5" class="gold"/>
-  <text x="97" y="467" class="label gold strong">SIGNED ALPHA PENDING</text>
+  <text x="97" y="467" class="label gold strong">${releaseLabel}</text>
   <text x="57" y="526" class="small strong">APPLE SILICON</text><text x="173" y="526" class="small muted">· macOS 11 or later</text>
   <text x="57" y="558" class="small muted">multaiplayer.com</text>
 
@@ -51,10 +53,10 @@ export function socialCardSvg() {
     <text x="176" y="71" class="tiny muted">Launch Team</text><text x="176" y="91" class="small strong">Desktop launch</text>
     <rect x="279" y="54" width="184" height="35" rx="7" class="chip"/><text x="296" y="76" class="tiny strong">Chat</text><text x="342" y="76" class="tiny muted">Files</text><text x="386" y="76" class="tiny muted">Terminal</text><text x="441" y="76" class="tiny muted">Room</text>
     <rect x="172" y="111" width="374" height="48" rx="6" class="chip"/><circle cx="192" cy="135" r="11" fill="#2c2c27"/><text x="188" y="139" class="tiny gold">◇</text><text x="211" y="130" class="tiny strong">The host reviews local actions.</text><text x="211" y="145" class="tiny muted">Shared Codex activity stays visible to the room.</text>
-    <circle cx="188" cy="188" r="13" fill="#292a27"/><text x="184" y="192" class="tiny">C</text><text x="211" y="184" class="tiny strong">Casey</text><text x="211" y="201" class="tiny muted">Let’s finish the signed alpha release checklist.</text>
-    <circle cx="188" cy="234" r="13" fill="#292a27"/><text x="184" y="238" class="tiny">R</text><text x="211" y="230" class="tiny strong">Rowan</text><text x="211" y="247" class="tiny muted">Relay, policies, and invite handling are ready.</text>
+    <circle cx="188" cy="188" r="13" fill="#292a27"/><text x="184" y="192" class="tiny">C</text><text x="211" y="184" class="tiny strong">Casey</text><text x="211" y="201" class="tiny muted">Let’s trace the failing workspace test first.</text>
+    <circle cx="188" cy="234" r="13" fill="#292a27"/><text x="184" y="238" class="tiny">R</text><text x="211" y="230" class="tiny strong">Rowan</text><text x="211" y="247" class="tiny muted">I reproduced it and added a focused fixture.</text>
     <circle cx="188" cy="284" r="13" fill="#26231b"/><text x="182" y="288" class="small gold">✣</text><text x="211" y="280" class="tiny strong">Codex</text>
-    <rect x="211" y="291" width="319" height="105" rx="6" class="panel" stroke="#34342f"/><text x="227" y="313" class="tiny strong">Release plan</text><text x="227" y="334" class="tiny muted">1. Verify the Apple silicon package</text><text x="227" y="352" class="tiny muted">2. Confirm signing and notarization</text><text x="227" y="370" class="tiny muted">3. Publish the supported release manifest</text>
+    <rect x="211" y="291" width="319" height="105" rx="6" class="panel" stroke="#34342f"/><text x="227" y="313" class="tiny strong">Debugging plan</text><text x="227" y="334" class="tiny muted">1. Reproduce the parser failure</text><text x="227" y="352" class="tiny muted">2. Inspect the smallest input boundary</text><text x="227" y="370" class="tiny muted">3. Run the focused regression test</text>
     <rect x="172" y="425" width="374" height="42" rx="6" class="chip"/><text x="188" y="451" class="tiny muted">Message the room, or type @Codex…</text>
 
     <text x="571" y="70" class="tiny muted">CONTEXT</text><text x="671" y="70" class="tiny strong">Files</text>
@@ -65,7 +67,9 @@ export function socialCardSvg() {
 }
 
 export async function writeSocialCard() {
-  const png = await sharp(Buffer.from(socialCardSvg())).png({ compressionLevel: 9 }).toBuffer();
+  const rawManifest = JSON.parse(await readFile(new URL("../public/releases/latest.json", import.meta.url), "utf8"));
+  const manifest = parseReleaseManifest(rawManifest);
+  const png = await sharp(Buffer.from(socialCardSvg(manifest))).png({ compressionLevel: 9 }).toBuffer();
   await writeFile(outputUrl, png);
 }
 

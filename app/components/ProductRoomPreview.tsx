@@ -40,13 +40,13 @@ export function ProductRoomPreview({ theme, compact = false }: ProductRoomPrevie
         </div>
         <div className="preview-boundary"><span>◇</span><p><strong>The host reviews local actions.</strong> Room members can see shared Codex events, diffs, and tool activity.</p><b>Understood</b></div>
         <div className="preview-thread">
-          <PreviewMessage initials="C" name="Casey" time="10:14">Let’s finish the signed alpha release checklist.</PreviewMessage>
-          <PreviewMessage initials="R" name="Rowan" time="10:15">Relay, policies, and invite handling are ready for final verification.</PreviewMessage>
+          <PreviewMessage initials="C" name="Casey" time="10:14">Let’s trace the failing workspace test before we touch the implementation.</PreviewMessage>
+          <PreviewMessage initials="R" name="Rowan" time="10:15">I reproduced it in the parser and added the smallest fixture.</PreviewMessage>
           <PreviewMessage initials="✣" name="Codex" time="10:16" codex>
-            <strong>Release plan</strong>
-            <span>1. Verify the Apple silicon package</span>
-            <span>2. Confirm signing and notarization</span>
-            <span>3. Publish the supported release manifest</span>
+            <strong>Debugging plan</strong>
+            <span>1. Reproduce the parser failure</span>
+            <span>2. Inspect the smallest input boundary</span>
+            <span>3. Run the focused regression test</span>
           </PreviewMessage>
         </div>
         <div className="preview-composer"><span>Message the room, or type @Codex…</span><b>↗</b></div>

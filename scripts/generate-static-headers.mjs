@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { readFile, writeFile } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 
 export function inlineScriptHashes(html) {
   const hashes = [];
@@ -34,10 +34,46 @@ export function inviteHeaders(hashes) {
   return `${block("/invite")}\n\n${block("/invite/")}\n`;
 }
 
+export function siteHeaders(hashes) {
+  if (!Array.isArray(hashes) || hashes.length === 0) throw new Error("The static export must contain at least one hashed inline script.");
+  const csp = [
+    "default-src 'none'",
+    `script-src 'self' ${hashes.join(" ")}`,
+    "style-src 'self'",
+    "img-src 'self' data:",
+    "font-src 'self' data:",
+    "connect-src 'none'",
+    "media-src 'none'",
+    "object-src 'none'",
+    "frame-src 'none'",
+    "frame-ancestors 'none'",
+    "worker-src 'none'",
+    "manifest-src 'self'",
+    "base-uri 'none'",
+    "form-action 'none'",
+    "upgrade-insecure-requests",
+  ].join("; ");
+  return `/*\n  Content-Security-Policy: ${csp}\n  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()\n  Referrer-Policy: no-referrer\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  X-Content-Type-Options: nosniff\n  X-Frame-Options: DENY\n`;
+}
+
+async function htmlFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const nested = await Promise.all(entries.map((entry) => {
+    const url = new URL(`${entry.name}${entry.isDirectory() ? "/" : ""}`, directory);
+    return entry.isDirectory() ? htmlFiles(url) : entry.name.endsWith(".html") ? [url] : [];
+  }));
+  return nested.flat();
+}
+
 async function main() {
-  const html = await readFile(new URL("../out/invite.html", import.meta.url), "utf8");
-  await writeFile(new URL("../out/_headers", import.meta.url), inviteHeaders(inlineScriptHashes(html)), "utf8");
-  console.log("Generated exact invite CSP hashes in out/_headers.");
+  const output = new URL("../out/", import.meta.url);
+  const files = await htmlFiles(output);
+  const pages = await Promise.all(files.map((file) => readFile(file, "utf8")));
+  const allHashes = [...new Set(pages.flatMap(inlineScriptHashes))];
+  const inviteHtml = await readFile(new URL("invite.html", output), "utf8");
+  const headers = `${siteHeaders(allHashes)}\n${inviteHeaders(inlineScriptHashes(inviteHtml))}`;
+  await writeFile(new URL("_headers", output), headers, "utf8");
+  console.log("Generated exact static-export and invitation CSP hashes in out/_headers.");
 }
 
 if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {

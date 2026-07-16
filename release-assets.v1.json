@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "description": "Canonical public asset contract for a supported multAIplayer macOS release.",
+  "requiredExactNames": [
+    "multAIplayer-macos-arm64.app.tar.gz",
+    "multAIplayer-macos-arm64.app.tar.gz.sig",
+    "latest.json",
+    "SHA256SUMS.txt"
+  ],
+  "requiredNamePatterns": ["^multAIplayer_[0-9A-Za-z.+-]+_aarch64\\.dmg$"],
+  "checksumManifest": "SHA256SUMS.txt"
+}

@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ProductRoomPreview } from "./components/ProductRoomPreview";
-import { supportedMacDownload } from "../lib/release-manifest";
+import { releaseManifest, supportedMacDownload } from "../lib/release-manifest";
 
 const githubUrl = "https://github.com/maddiedreese/multAIplayer";
+const websiteGithubUrl = "https://github.com/maddiedreese/multaiplayer-site";
 
 const features = [
   {
@@ -36,7 +37,7 @@ const features = [
 const trustItems = [
   { label: "Security boundaries, exclusions, and residual risks", href: `${githubUrl}/blob/main/docs/threat-model.md` },
   { label: "Protocol and key lifecycle mechanics", href: `${githubUrl}/blob/main/docs/cryptography.md` },
-  { label: "Test evidence and open review questions", href: `${githubUrl}/blob/main/docs/design/external-review-packet.md` },
+  { label: "Known alpha limitations", href: `${githubUrl}/blob/main/docs/alpha-limitations.md` },
   { label: "Updater public-key fingerprint", href: "/security/updater-key" },
   { label: "Private vulnerability reports", href: `${githubUrl}/security/advisories/new` },
 ];
@@ -64,15 +65,15 @@ const faqs = [
   },
   {
     q: "What platforms are supported?",
-    a: "The first public alpha will support Apple silicon Macs running macOS 11 or later. Intel Macs, Windows, and Linux desktop packages are not supported.",
+    a: "The alpha supports Apple silicon Macs running macOS 11 or later. Intel Macs, Windows, and Linux desktop packages are not supported.",
   },
   {
     q: "Is it ready for sensitive production work?",
-    a: "Not yet. This is experimental alpha software preparing for its first supported release. Teams should review the threat model and known limitations before using private, regulated, or high-stakes projects.",
+    a: "No. This is experimental alpha software. Teams should review the threat model and known limitations before using private, regulated, or high-stakes projects.",
   },
   {
     q: "Who maintains multAIplayer and the hosted relay?",
-    a: "multAIplayer is currently maintained by one person, Maddie. D. Reese. Releases, security fixes, compatibility, and continued operation of the hosted relay are not guaranteed, so keep normal project and Git backups and review the project’s continuity guidance before depending on the alpha for important work.",
+    a: "multAIplayer is currently maintained by one person, Maddie D. Reese. Releases, security fixes, compatibility, and continued operation of the hosted relay are not guaranteed, so keep normal project and Git backups and review the project’s continuity guidance before depending on the alpha for important work.",
   },
 ];
 
@@ -205,7 +206,7 @@ export default function Home() {
           <h2>See how the room works.<br />Run the relay yourself.</h2>
         </div>
         <div className="source-copy">
-          <p>Inspect the protocol, crypto boundaries, desktop client, and relay. Self-host for your team or help shape the first public alpha in the open.</p>
+          <p>Inspect the protocol, crypto boundaries, desktop client, and relay. Self-host for your team or help shape the alpha in the open.</p>
           <div className="source-actions">
             <a className="button button-inverse" href={githubUrl}>Explore the repository <span>↗</span></a>
             <a className="button button-dark-ghost" href={`${githubUrl}/blob/main/docs/self-hosting.md`}>Self-hosting guide</a>
@@ -236,7 +237,7 @@ export default function Home() {
       <section className="final-cta">
         <div className="cta-orbit orbit-one" /><div className="cta-orbit orbit-two" />
         <Image src="/brand/icon.png" alt="multAIplayer icon" width={72} height={72} />
-        <div className="eyebrow"><span className="live-dot" /> Alpha release pending</div>
+        <div className="eyebrow"><span className="live-dot" /> {supportedMacDownload ? `Alpha ${supportedMacDownload.version} available` : "Alpha release pending"}</div>
         <h2>Bring the whole team<br />into the loop.</h2>
         <p>{supportedMacDownload ? "Download the signed alpha for an Apple silicon Mac running macOS 11 or later." : "The first signed download for Apple silicon Macs running macOS 11 or later has not been published yet."}</p>
         {supportedMacDownload ? <a className="button button-primary button-large" href={supportedMacDownload.url}>Download for Apple silicon <span>↗</span></a> : <span className="button button-primary button-large release-unavailable" aria-disabled="true">Signed download not yet published</span>}
@@ -252,11 +253,11 @@ export default function Home() {
         </div>
         <div className="footer-links">
           <div><strong>Product</strong><a href="#how-it-works">How it works</a><Link href="/faq">FAQ</Link>{supportedMacDownload ? <a href={supportedMacDownload.url}>Download</a> : <span className="release-unavailable">Signed download pending</span>}<Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div>
-          <div><strong>Project</strong><a href={githubUrl}>GitHub</a><a href={`${githubUrl}/blob/main/docs/using-the-app.md`}>Documentation</a><a href={`${githubUrl}/issues`}>Issues</a></div>
+          <div><strong>Project</strong><a href={githubUrl}>Application source</a><a href={websiteGithubUrl}>Website source</a><a href={`${githubUrl}/blob/main/docs/using-the-app.md`}>Documentation</a><a href={`${githubUrl}/issues`}>Issues</a></div>
           <div><strong>Trust</strong><a href={`${githubUrl}/blob/main/SECURITY.md`}>Security</a><Link href="/security/updater-key">Updater key</Link><a href={`${githubUrl}/blob/main/docs/alpha-limitations.md`}>Alpha limitations</a><a href={`${githubUrl}/blob/main/docs/if-unmaintained.md`}>Project continuity</a><a href={`${githubUrl}/blob/main/LICENSE`}>License</a></div>
         </div>
         <p className="independence-note">multAIplayer is an independent open-source project and is not affiliated with, endorsed by, or sponsored by OpenAI. The OpenAI and Codex names belong to OpenAI.</p>
-        <div className="footer-bottom"><span>© {new Date().getFullYear()} multAIplayer</span><span>Open source under Apache-2.0</span><span className="footer-status"><i /> Alpha release pending</span></div>
+        <div className="footer-bottom"><span>© {new Date().getFullYear()} multAIplayer</span><span>Open source under Apache-2.0</span><span className="footer-status"><i /> {releaseManifest.supported ? `Alpha ${releaseManifest.version} available` : "Alpha release pending"}</span></div>
       </footer>
     </main>
   );

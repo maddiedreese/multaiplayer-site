@@ -2,7 +2,9 @@
 
 The public website for [multAIplayer](https://github.com/maddiedreese/multAIplayer), a private group chat for building with Codex together.
 
-The site publishes the service [Privacy Policy](https://multaiplayer.com/privacy) and [Terms of Service](https://multaiplayer.com/terms). Their effective date, operator identity, platform support, hosted-service behavior, and data inventory are contract-tested in `tests/site-policy.test.mjs`. Update the policies whenever the relay, authentication scopes, retention, deletion behavior, subprocess boundaries, infrastructure providers, or supported platform changes.
+The site publishes the service [Privacy Policy](https://multaiplayer.com/privacy) and [Terms of Service](https://multaiplayer.com/terms). Review both whenever the relay, authentication scopes, retention, deletion behavior, subprocess boundaries, infrastructure providers, or supported platform changes. Automated checks cover routing and security behavior; they do not substitute for reviewing public claims and legal text.
+
+The source is licensed under [Apache-2.0](LICENSE). See [CONTRIBUTING.md](CONTRIBUTING.md) for change and verification guidance, [SECURITY.md](SECURITY.md) for private vulnerability reporting, and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations.
 
 ## Local development
 
@@ -39,7 +41,7 @@ Before releasing a desktop build, verify that both live association files contai
 
 ## Release manifest
 
-The website checks the application repository for a non-draft GitHub Release, including prereleases, that contains the complete trusted release-workflow asset set. It publishes `https://multaiplayer.com/releases/latest.json` for website download surfaces. The desktop uses the separately signed Tauri manifest on the application repository's pinned `update-channel` branch; the website manifest is not an updater trust root.
+The website checks the application repository for non-draft GitHub Releases, including prereleases, and selects the greatest valid SemVer containing the signed updater files, checksums, and exactly one digested Apple-silicon DMG. GitHub creation order cannot make the manifest regress to a lower version. The site publishes `https://multaiplayer.com/releases/latest.json` for website download surfaces. The desktop uses the separately signed Tauri manifest on the application repository's pinned `update-channel` branch; the website manifest is not an updater trust root.
 
 Run the updater locally with:
 
@@ -48,4 +50,12 @@ npm run release:manifest
 ```
 
 Use `--dry-run` to print the manifest without writing it.
-A release is supported only when it contains exactly one SHA-256-digested arm64 `.dmg` and exactly one of every trusted workflow asset: `multAIplayer-macos-arm64-app.zip`, `multAIplayer-macos-arm64.app.tar.gz`, its `.sig`, `latest.json`, `desktop-reproducibility-evidence.zip`, `SHA256SUMS.txt`, `multaiplayer.spdx.json`, and both Sigstore bundles. If no release has that complete set, the website manifest uses a neutral `0.0.0` no-release record, contains no download, and every surface says that the signed download has not been published. The direct DMG URL, architecture, and digest appear only for a supported release.
+A release is supported only when it satisfies the application repository’s versioned `docs/release-assets.v1.json` contract: exactly one SHA-256-digested arm64 `.dmg` plus every exact stable artifact in that contract. This repository pins a reviewed copy at `release-assets.v1.json`; the scheduled updater compares it with the application repository before accepting a release. The website’s matching `macos-arm64-v1` parser fails closed on an unknown schema or asset contract. If no release has the complete set, the website manifest uses a neutral `0.0.0` no-release record, contains no download, and every surface derives an unavailable state from that record. The direct DMG URL, architecture, and digest appear only for a supported release.
+
+## Production operation and rollback
+
+Netlify builds `main` with Node.js 22, the confirmed `MULTAIPLAYER_APPLE_TEAM_ID`, and `npm run build`. Both `multaiplayer.com` and `open.multaiplayer.com` must serve the same deploy. After each production deploy, verify the home, FAQ, Privacy, Terms, updater-key, invitation, release-manifest, and Apple association routes; confirm the invitation response is no-store/no-referrer with its generated CSP; and confirm a supported download, when present, points only to the official GitHub release.
+
+The hourly release-manifest workflow commits only a changed generated manifest. A failed fetch, unknown contract, incomplete artifact set, malformed digest, or untrusted download origin must not publish a download. If a site deployment is defective, roll back to the last verified Netlify deploy and revert the responsible commit on `main`; do not patch generated output in the hosting UI. If an application release is defective, mark it draft or remove the incomplete/affected release assets so the next manifest run returns to the previous complete supported release or the explicit unavailable state, then dispatch the workflow and verify the live JSON and all download surfaces.
+
+Before changing either custom domain, preserve HTTPS, HSTS, both universal-link association files, and the exact `/invite` and `/invite/` behavior. DNS, Netlify environment values, GitHub repository settings, and production Team IDs are operator configuration and must not be committed as credentials.

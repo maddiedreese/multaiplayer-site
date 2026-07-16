@@ -28,7 +28,7 @@ export default function InvitePage() {
         releaseVersion={supportedMacDownload ? supportedMacDownload.version : null}
       />
       <footer className={styles.footer}>
-        <span>Invite capabilities stay on this device.</span>
+        <span>This page does not send invite fragments to the website server.</span>
         <a href="https://github.com/maddiedreese/multAIplayer/blob/main/docs/threat-model.md">Read the threat model</a>
         <a href="https://multaiplayer.com/privacy">Privacy</a>
         <a href="https://multaiplayer.com/terms">Terms</a>

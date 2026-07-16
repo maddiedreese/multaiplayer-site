@@ -1,25 +1,45 @@
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import {
+  RELEASE_ASSET_SET,
+  RELEASE_MANIFEST_SCHEMA_VERSION,
+  parseReleaseManifest,
+} from "../lib/release-contract.mjs";
 
 const repository = process.env.MULTAIPLAYER_RELEASE_REPOSITORY ?? "maddiedreese/multAIplayer";
-const apiUrl = process.env.MULTAIPLAYER_RELEASES_API_URL ?? `https://api.github.com/repos/${repository}/releases?per_page=20`;
+const apiUrl = process.env.MULTAIPLAYER_RELEASES_API_URL ?? `https://api.github.com/repos/${repository}/releases?per_page=100`;
+const assetContractUrl = process.env.MULTAIPLAYER_RELEASE_ASSET_CONTRACT_URL ?? "https://raw.githubusercontent.com/maddiedreese/multAIplayer/main/docs/release-assets.v1.json";
 const outputUrl = new URL("../public/releases/latest.json", import.meta.url);
+const vendoredContractUrl = new URL("../release-assets.v1.json", import.meta.url);
+const vendoredAssetContract = JSON.parse(readFileSync(vendoredContractUrl, "utf8"));
+const diskImagePatterns = vendoredAssetContract.requiredNamePatterns.map((pattern) => new RegExp(pattern));
+
+export function assertCanonicalAssetContract(canonical, vendored) {
+  const relevant = (value) => ({
+    schemaVersion: value?.schemaVersion,
+    requiredExactNames: value?.requiredExactNames,
+    requiredNamePatterns: value?.requiredNamePatterns,
+    checksumManifest: value?.checksumManifest,
+  });
+  if (JSON.stringify(relevant(canonical)) !== JSON.stringify(relevant(vendored))) {
+    throw new Error("The website release asset contract does not match the application repository.");
+  }
+}
 
 export function manifestFromReleases(releases) {
-  const publishedReleases = releases.filter((candidate) => !candidate.draft);
-  const release = publishedReleases.find((candidate) => trustedReleaseDiskImage(candidate));
-  if (!release) return unavailableManifest();
+  const candidates = releases.flatMap((release) => {
+    if (release?.draft) return [];
+    const version = parseSemVerTag(release?.tag_name);
+    const diskImage = trustedReleaseDiskImage(release);
+    return version && diskImage ? [{ release, version, diskImage }] : [];
+  });
+  candidates.sort((left, right) => compareSemVer(right.version, left.version));
+  const selected = candidates[0];
+  if (!selected) return unavailableManifest();
 
-  const version = String(release.tag_name ?? "").replace(/^v/, "");
-  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) {
-    throw new Error(`Unsupported release tag: ${release.tag_name ?? "missing"}`);
-  }
+  const { release, version, diskImage } = selected;
 
-  const body = String(release.body ?? "").trim();
-  const firstParagraph = body.split(/\n\s*\n/).find((paragraph) => paragraph.trim())?.replace(/\s+/g, " ");
-  const notes = firstParagraph?.slice(0, 280) || String(release.name ?? `multAIplayer ${version}`);
-  const diskImage = trustedReleaseDiskImage(release);
-  if (!diskImage) throw new Error(`Release ${release.tag_name} lost its trusted macOS asset set.`);
   const downloadUrl = normalizedReleaseDownloadUrl(diskImage.browser_download_url, repository, release.tag_name);
   const digest = typeof diskImage.digest === "string" && /^sha256:[a-f0-9]{64}$/.test(diskImage.digest)
     ? diskImage.digest
@@ -28,11 +48,10 @@ export function manifestFromReleases(releases) {
     ? "arm64"
     : /(?:universal)/i.test(diskImage.name) ? "universal" : /(?:x64|x86_64)/i.test(diskImage.name) ? "x64" : "macos";
 
-  return {
-    version,
-    url: release.html_url,
-    notes,
-    security: /^\[security\]/i.test(String(release.name ?? "").trim()) || /(?:^|\n)Security update:\s*(?:true|yes)(?:\n|$)/i.test(body),
+  return parseReleaseManifest({
+    schemaVersion: RELEASE_MANIFEST_SCHEMA_VERSION,
+    releaseAssetSet: RELEASE_ASSET_SET,
+    version: version.raw,
     supported: true,
     downloads: {
       macos: {
@@ -42,28 +61,48 @@ export function manifestFromReleases(releases) {
         ...(digest ? { digest } : {}),
       },
     },
+  });
+}
+
+function parseSemVerTag(value) {
+  if (typeof value !== "string") return null;
+  const match = /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*))?$/.exec(value);
+  if (!match) return null;
+  return {
+    raw: value.slice(1),
+    core: match.slice(1, 4).map((part) => BigInt(part)),
+    prerelease: match[4]?.split(".") ?? [],
   };
 }
 
-const trustedReleaseAssetNames = [
-  "multAIplayer-macos-arm64-app.zip",
-  "multAIplayer-macos-arm64.app.tar.gz",
-  "multAIplayer-macos-arm64.app.tar.gz.sig",
-  "latest.json",
-  "desktop-reproducibility-evidence.zip",
-  "SHA256SUMS.txt",
-  "multaiplayer.spdx.json",
-  "SHA256SUMS.txt.sigstore.json",
-  "multaiplayer.spdx.json.sigstore.json",
-];
+function compareSemVer(left, right) {
+  for (let index = 0; index < left.core.length; index += 1) {
+    if (left.core[index] !== right.core[index]) return left.core[index] > right.core[index] ? 1 : -1;
+  }
+  if (left.prerelease.length === 0 || right.prerelease.length === 0) {
+    return left.prerelease.length === right.prerelease.length ? 0 : left.prerelease.length === 0 ? 1 : -1;
+  }
+  const length = Math.max(left.prerelease.length, right.prerelease.length);
+  for (let index = 0; index < length; index += 1) {
+    const leftPart = left.prerelease[index];
+    const rightPart = right.prerelease[index];
+    if (leftPart === undefined || rightPart === undefined) return leftPart === undefined ? -1 : 1;
+    if (leftPart === rightPart) continue;
+    const leftNumeric = /^\d+$/.test(leftPart);
+    const rightNumeric = /^\d+$/.test(rightPart);
+    if (leftNumeric && rightNumeric) return BigInt(leftPart) > BigInt(rightPart) ? 1 : -1;
+    if (leftNumeric !== rightNumeric) return leftNumeric ? -1 : 1;
+    return leftPart > rightPart ? 1 : -1;
+  }
+  return 0;
+}
 
 function trustedReleaseDiskImage(release) {
   const assets = Array.isArray(release?.assets) ? release.assets : [];
-  if (!trustedReleaseAssetNames.every((name) => assets.filter((asset) => asset?.name === name).length === 1)) return null;
+  if (!vendoredAssetContract.requiredExactNames.every((name) => assets.filter((asset) => asset?.name === name).length === 1)) return null;
   const diskImages = assets.filter((asset) =>
     typeof asset?.name === "string" &&
-    asset.name.toLowerCase().endsWith(".dmg") &&
-    /(?:aarch64|arm64)/i.test(asset.name) &&
+    diskImagePatterns.some((pattern) => pattern.test(asset.name)) &&
     typeof asset.digest === "string" &&
     /^sha256:[a-f0-9]{64}$/.test(asset.digest)
   );
@@ -71,14 +110,13 @@ function trustedReleaseDiskImage(release) {
 }
 
 function unavailableManifest() {
-  return {
+  return parseReleaseManifest({
+    schemaVersion: RELEASE_MANIFEST_SCHEMA_VERSION,
+    releaseAssetSet: RELEASE_ASSET_SET,
     version: "0.0.0",
-    url: "https://multaiplayer.com",
-    notes: "No supported desktop release has been published.",
-    security: false,
     supported: false,
     downloads: {},
-  };
+  });
 }
 
 function normalizedReleaseDownloadUrl(value, expectedRepository, expectedTag) {
@@ -103,10 +141,16 @@ export async function fetchManifest(fetchImpl = fetch) {
   };
   if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
 
-  const response = await fetchImpl(apiUrl, { headers });
+  const [response, contractResponse, vendoredContractText] = await Promise.all([
+    fetchImpl(apiUrl, { headers }),
+    fetchImpl(assetContractUrl, { headers: { "User-Agent": headers["User-Agent"] } }),
+    readFile(vendoredContractUrl, "utf8"),
+  ]);
   if (!response.ok) throw new Error(`GitHub Releases request failed with ${response.status}.`);
+  if (!contractResponse.ok) throw new Error(`Release asset contract request failed with ${contractResponse.status}.`);
   const releases = await response.json();
   if (!Array.isArray(releases)) throw new Error("GitHub Releases returned an unexpected response.");
+  assertCanonicalAssetContract(await contractResponse.json(), JSON.parse(vendoredContractText));
   return manifestFromReleases(releases);
 }
 

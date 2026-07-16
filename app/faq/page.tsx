@@ -31,7 +31,7 @@ const faqs = [
   {
     category: "Trust",
     question: "How are rooms encrypted, and has this been audited?",
-    answer: <p>The mechanism uses RFC 9420 MLS through <code>mls-rs</code>, with native-client encryption and exporter-derived protection for relevant payloads. The integration has not received an independent professional security audit. The <a href={`${docsUrl}/threat-model.md`}>threat model</a> is the sole normative claims source; reviewers can use the <a href={`${docsUrl}/design/external-review-packet.md`}>external review packet</a>.</p>,
+    answer: <p>The mechanism uses RFC 9420 MLS through <code>mls-rs</code>, with native-client encryption and exporter-derived protection for relevant payloads. The integration has not received an independent professional security audit. The <a href={`${docsUrl}/threat-model.md`}>threat model</a> is the sole normative claims source, and the <a href={`${docsUrl}/alpha-limitations.md`}>alpha limitations</a> summarize practical constraints.</p>,
   },
   {
     category: "Trust",
@@ -51,7 +51,7 @@ const faqs = [
   {
     category: "Operations",
     question: "How are desktop updates protected?",
-    answer: <p>Supported releases are Developer ID-signed and notarized. The desktop updater uses the application repository&apos;s pinned <code>update-channel</code> branch and accepts only archives carrying the Tauri release signature. The website&apos;s release manifest drives download links; it is not an updater trust root. This site separately publishes the <Link href="/security/updater-key">pre-committed updater-key fingerprint</Link> so it can be compared outside the GitHub release channel. Releases also publish checksums, Sigstore evidence, an SPDX SBOM, and reproducibility evidence. Follow the <a href={`${docsUrl}/reproducible-builds.md`}>verification guide</a>.</p>,
+    answer: <p>Supported releases are Developer ID-signed and notarized. The desktop updater uses the application repository&apos;s pinned <code>update-channel</code> branch and accepts only archives carrying the Tauri release signature. The website&apos;s release manifest drives download links; it is not an updater trust root. This site separately publishes the <Link href="/security/updater-key">pre-committed updater-key fingerprint</Link> so it can be compared outside the GitHub release channel. Releases also publish SHA-256 checksums for manual verification. Follow the <a href={`${docsUrl}/reproducible-builds.md`}>verification guide</a>.</p>,
   },
   {
     category: "Scope",

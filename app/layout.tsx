@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { releaseManifest } from "../lib/release-manifest";
+
+const releaseDescription = releaseManifest.supported
+  ? `Download multAIplayer ${releaseManifest.version} for Apple silicon Macs.`
+  : "The first supported signed alpha for Apple silicon Macs has not been published.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://multaiplayer.com"),
   title: "multAIplayer | Build with Codex. Together.",
-  description: "A free, open-source team room for working with Codex. The signed alpha targets Apple silicon Macs running macOS 11 or later.",
+  description: `A free, open-source team room for working with Codex. ${releaseDescription}`,
   applicationName: "multAIplayer",
   keywords: ["Codex", "collaboration", "pair programming", "AI coding", "developer tools"],
   alternates: { canonical: "/" },
   openGraph: {
     title: "multAIplayer | Build with Codex. Together.",
-    description: "Free, open-source group chat for coding with Codex. Apple silicon alpha release pending.",
+    description: `Free, open-source group chat for coding with Codex. ${releaseDescription}`,
     url: "https://multaiplayer.com",
     siteName: "multAIplayer",
     type: "website",
@@ -19,7 +24,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "multAIplayer | Build with Codex. Together.",
-    description: "Free, open-source group chat for coding with Codex. Apple silicon alpha release pending.",
+    description: `Free, open-source group chat for coding with Codex. ${releaseDescription}`,
     images: ["/og.png"],
   },
   icons: {

@@ -6,6 +6,8 @@ test("keeps the landing alive while the direct disk image opens separately", asy
   const source = await readFile(new URL("../app/invite/InviteLanding.tsx", import.meta.url), "utf8");
   assert.match(source, /href=\{downloadUrl\} target="_blank" rel="noopener noreferrer"/);
   assert.match(source, /Signed download not yet published/);
+  assert.match(source, /Browser extensions, synced messages, copied links/);
+  assert.doesNotMatch(source, /sends it only when you choose/);
   assert.match(source, /first supported signed download has not been published/);
   assert.doesNotMatch(source, /old|previous|scaffold/i);
 });

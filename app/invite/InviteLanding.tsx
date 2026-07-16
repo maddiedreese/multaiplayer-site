@@ -73,7 +73,7 @@ export default function InviteLanding({
 
       <aside className={styles.securityNote}>
         <strong>Keep this invitation private.</strong>
-        <span>It contains a one-time capability. This page removes it from the address bar, never stores it, and sends it only when you choose to open the app. Never paste the complete link into an issue, support email, log, or diagnostic bundle.</span>
+        <span>It contains a one-time capability. This page removes it from the address bar, does not put it in browser storage or website requests, and keeps it in this tab’s memory for the app-opening retry. Browser extensions, synced messages, copied links, and the original sender can still expose it. Never paste the complete link into an issue, support email, log, or diagnostic bundle.</span>
       </aside>
     </section>
   );

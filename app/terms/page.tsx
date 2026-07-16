@@ -14,7 +14,7 @@ export default function TermsPage() {
 
       <section>
         <h2>1. The alpha service</h2>
-        <p>multAIplayer is free, experimental, open-source collaboration software. The official service consists of a static website and, when deployed and available, GitHub-based sign-in and an official relay designated to run on Railway. The supported public-alpha desktop target is an Apple silicon Mac running macOS 11 or later.</p>
+        <p>multAIplayer is free, experimental, open-source collaboration software. The official service consists of this static website, GitHub-based sign-in, and an official relay running on Railway. The supported public-alpha desktop target is an Apple silicon Mac running macOS 11 or later. The free alpha has no uptime or continuity guarantee.</p>
         <p>The alpha may contain bugs, lose or delay encrypted relay data, change protocol or storage formats, become incompatible with older rooms or Codex versions, or require manual recovery. It has not received an independent security audit. It is not designed for emergency, medical, financial, legal, regulated, safety-critical, or other use where failure could cause material harm.</p>
       </section>
 

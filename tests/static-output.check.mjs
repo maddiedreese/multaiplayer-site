@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { inlineScriptHashes } from "../scripts/generate-static-headers.mjs";
 import { APP_BUNDLE_ID, TEAM_ID_PATTERN } from "../scripts/generate-aasa.mjs";
+import { parseReleaseManifest } from "../lib/release-contract.mjs";
 
 test("static invitation export carries exact CSP hashes and no capability value", async () => {
   const [html, headers, aasa] = await Promise.all([
@@ -17,19 +18,22 @@ test("static invitation export carries exact CSP hashes and no capability value"
   for (const hash of inlineScriptHashes(html)) assert.ok(headers.includes(hash), `missing CSP hash ${hash}`);
   assert.doesNotMatch(headers, /unsafe-inline|unsafe-eval/);
   assert.match(headers, /Cache-Control: no-store/);
+  assert.match(headers, /Strict-Transport-Security: max-age=31536000; includeSubDomains/);
   const teamId = process.env.MULTAIPLAYER_APPLE_TEAM_ID;
   assert.match(teamId ?? "", TEAM_ID_PATTERN);
   assert.deepEqual(JSON.parse(aasa).applinks.details[0].appIDs, [`${teamId}.${APP_BUNDLE_ID}`]);
 });
 
 test("static export publishes privacy and terms and links them from invitation handling", async () => {
-  const [privacy, terms, invite, home, faq] = await Promise.all([
+  const [privacy, terms, invite, home, faq, rawManifest] = await Promise.all([
     readFile(new URL("../out/privacy.html", import.meta.url), "utf8"),
     readFile(new URL("../out/terms.html", import.meta.url), "utf8"),
     readFile(new URL("../out/invite.html", import.meta.url), "utf8"),
     readFile(new URL("../out/index.html", import.meta.url), "utf8"),
     readFile(new URL("../out/faq.html", import.meta.url), "utf8"),
+    readFile(new URL("../public/releases/latest.json", import.meta.url), "utf8"),
   ]);
+  const manifest = parseReleaseManifest(JSON.parse(rawManifest));
   assert.match(privacy, /Privacy Policy/);
   assert.match(privacy, /Flared Inc\./);
   assert.match(terms, /Terms of Service/);
@@ -42,7 +46,12 @@ test("static export publishes privacy and terms and links them from invitation h
     assert.doesNotMatch(page, /releases\/download\/v0\.1\.0-alpha\.0/);
   }
   for (const page of [home, faq]) {
-    assert.match(page, /Signed download (?:pending|not yet published)/);
+    if (manifest.supported) {
+      assert.ok(page.includes(manifest.downloads.macos.url));
+      assert.doesNotMatch(page, /Signed download (?:pending|not yet published)|Alpha release pending/);
+    } else {
+      assert.match(page, /Signed download (?:pending|not yet published)/);
+    }
   }
 });
 

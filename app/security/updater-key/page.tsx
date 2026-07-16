@@ -41,7 +41,7 @@ export default function UpdaterKeyPage() {
         <section>
           <h2>Rotation and suspected compromise</h2>
           <p>Routine rotation requires an old-key-signed bridge release that embeds the new key. The new fingerprint must appear here before that bridge is published.</p>
-          <p>If the current key may be compromised, do not trust an updater transition signed only by that key. Stop the update manifest, verify the incident and replacement fingerprint through channels that do not depend on GitHub, and use a manually Apple- and Sigstore-verified recovery install.</p>
+          <p>If the current key may be compromised, do not trust an updater transition signed only by that key. Stop the update manifest, verify the incident and replacement fingerprint through channels that do not depend on GitHub, and use a manually downloaded recovery build only after verifying its Apple signature, notarization, and published checksum.</p>
         </section>
       </article>
 
