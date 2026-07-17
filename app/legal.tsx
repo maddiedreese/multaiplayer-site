@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-export const effectiveDate = "July 14, 2026";
+export const effectiveDate = "July 17, 2026";
 export const companyName = "Flared Inc.";
 export const contactEmail = "maddie@maddiedreese.com";
 export const mailingAddress = "2093 Philadelphia Pike #2010, Claymont, DE 19703, United States";
@@ -48,4 +48,3 @@ export function LegalPage({
     </main>
   );
 }
-

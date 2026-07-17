@@ -128,7 +128,7 @@ export default function Home() {
             </div>
             <ProductRoomPreview theme="dark" />
           </div>
-          <div className="floating-card host-card"><span>Active host</span><strong>Casey</strong><i>approved</i></div>
+          <div className="floating-card host-card"><span>Active host</span><strong>Avery</strong><i>approved</i></div>
           <div className="floating-card event-card"><span className="bot-mark">✣</span><div><strong>Codex is working</strong><small>3 teammates following</small></div></div>
         </div>
       </section>
