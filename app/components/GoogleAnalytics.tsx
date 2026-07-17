@@ -6,8 +6,32 @@ import { useEffect, useState } from "react";
 
 const measurementId = "G-EMB8VFKS29";
 const preferenceKey = "multaiplayer:analytics-consent";
+const disableKey = `ga-disable-${measurementId}`;
 
 type AnalyticsPreference = "accepted" | "declined" | "undecided";
+type AnalyticsWindow = Window & {
+  gtag?: (...args: unknown[]) => void;
+  [disableKey]?: boolean;
+};
+
+function clearAnalyticsCookies() {
+  const cookieNames = document.cookie
+    .split(";")
+    .map((cookie) => cookie.trim().split("=", 1)[0])
+    .filter((name) => /^_(?:ga(?:_|$)|gid$|gat(?:_|$))/.test(name));
+  for (const name of cookieNames) {
+    const expired = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
+    document.cookie = expired;
+    if (window.location.hostname.includes(".")) document.cookie = `${expired}; Domain=.${window.location.hostname}`;
+  }
+}
+
+function setAnalyticsRuntimeEnabled(enabled: boolean) {
+  const analyticsWindow = window as AnalyticsWindow;
+  analyticsWindow[disableKey] = !enabled;
+  analyticsWindow.gtag?.("consent", "update", { analytics_storage: enabled ? "granted" : "denied" });
+  if (!enabled) clearAnalyticsCookies();
+}
 
 export function GoogleAnalytics() {
   const pathname = usePathname();
@@ -15,8 +39,15 @@ export function GoogleAnalytics() {
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
-      const stored = window.localStorage.getItem(preferenceKey);
-      setPreference(stored === "accepted" || stored === "declined" ? stored : "undecided");
+      let stored: string | null = null;
+      try {
+        stored = window.localStorage.getItem(preferenceKey);
+      } catch {
+        // Storage can be unavailable in hardened browsing modes; analytics stays off.
+      }
+      const next = stored === "accepted" || stored === "declined" ? stored : "undecided";
+      setAnalyticsRuntimeEnabled(next === "accepted");
+      setPreference(next);
     }, 0);
     return () => window.clearTimeout(timeout);
   }, []);
@@ -24,8 +55,18 @@ export function GoogleAnalytics() {
   if (pathname === "/invite" || pathname === "/invite/" || preference === null) return null;
 
   const savePreference = (next: Exclude<AnalyticsPreference, "undecided">) => {
-    window.localStorage.setItem(preferenceKey, next);
+    try {
+      window.localStorage.setItem(preferenceKey, next);
+    } catch {
+      // Keep the choice for this page even when persistence is unavailable.
+    }
+    setAnalyticsRuntimeEnabled(next === "accepted");
     setPreference(next);
+  };
+
+  const reopenChoices = () => {
+    setAnalyticsRuntimeEnabled(false);
+    setPreference("undecided");
   };
 
   return (
@@ -51,7 +92,7 @@ export function GoogleAnalytics() {
           </div>
         </aside>
       ) : (
-        <button className="analytics-choices" type="button" onClick={() => setPreference("undecided")}>Analytics choices</button>
+        <button className="analytics-choices" type="button" onClick={reopenChoices}>Analytics choices</button>
       )}
     </>
   );
