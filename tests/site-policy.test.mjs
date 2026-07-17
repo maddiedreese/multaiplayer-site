@@ -29,3 +29,11 @@ test("invite flow keeps analytics dependencies out and prevents fragment disclos
   assert.match(readme, /never puts the capability in HTML, storage, cookies, analytics, telemetry, or the clipboard/i);
   assert.doesNotMatch(`${await source("app/invite/page.tsx")}\n${await source("app/invite/InviteLanding.tsx")}`, /capabilities stay on this device|sends it only when/i);
 });
+
+test("analytics consent is reversible after the Google runtime has loaded", async () => {
+  const analytics = await source("app/components/GoogleAnalytics.tsx");
+  assert.match(analytics, /ga-disable-/);
+  assert.match(analytics, /analytics_storage: enabled \? "granted" : "denied"/);
+  assert.match(analytics, /Max-Age=0/);
+  assert.match(analytics, /const reopenChoices = \(\) => \{\s*setAnalyticsRuntimeEnabled\(false\)/);
+});
