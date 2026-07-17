@@ -13,7 +13,7 @@ test("every public website surface links both policies", async () => {
   }
 });
 
-test("website contains no analytics dependency and invite policy prevents fragment disclosure", async () => {
+test("invite flow keeps analytics dependencies out and prevents fragment disclosure", async () => {
   const [manifest, inviteScript, headers, readme] = await Promise.all([
     source("package.json"),
     source("lib/invite-capture.mjs"),

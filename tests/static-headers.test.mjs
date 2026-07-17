@@ -23,12 +23,19 @@ test("site-wide policy closes unused capabilities and enables transport protecti
   const headers = siteHeaders(["'sha256-example'"]);
   for (const control of [
     "default-src 'none'",
-    "connect-src 'none'",
+    "script-src 'self' https://www.googletagmanager.com",
+    "connect-src https://www.google-analytics.com https://region1.google-analytics.com",
     "frame-ancestors 'none'",
     "Strict-Transport-Security: max-age=31536000; includeSubDomains",
     "Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()",
   ]) assert.match(headers, new RegExp(control.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.doesNotMatch(headers, /unsafe-inline|unsafe-eval/);
+});
+
+test("invitation policy never permits analytics origins", () => {
+  const headers = inviteHeaders(["'sha256-example'"]);
+  assert.match(headers, /connect-src 'none'/);
+  assert.doesNotMatch(headers, /google-analytics|googletagmanager/);
 });
 
 test("site-wide headers cannot override invitation no-referrer policy", async () => {

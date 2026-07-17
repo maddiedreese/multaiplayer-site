@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { releaseManifest } from "../lib/release-manifest";
+import { GoogleAnalytics } from "./components/GoogleAnalytics";
 
 const releaseDescription = releaseManifest.supported
   ? `Download multAIplayer ${releaseManifest.version} for Apple silicon Macs.`
@@ -34,5 +35,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body>{children}</body></html>;
+  return <html lang="en"><body>{children}<GoogleAnalytics /></body></html>;
 }

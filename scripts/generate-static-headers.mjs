@@ -38,11 +38,11 @@ export function siteHeaders(hashes) {
   if (!Array.isArray(hashes) || hashes.length === 0) throw new Error("The static export must contain at least one hashed inline script.");
   const csp = [
     "default-src 'none'",
-    `script-src 'self' ${hashes.join(" ")}`,
+    `script-src 'self' https://www.googletagmanager.com ${hashes.join(" ")}`,
     "style-src 'self'",
     "img-src 'self' data:",
     "font-src 'self' data:",
-    "connect-src 'none'",
+    "connect-src https://www.google-analytics.com https://region1.google-analytics.com",
     "media-src 'none'",
     "object-src 'none'",
     "frame-src 'none'",

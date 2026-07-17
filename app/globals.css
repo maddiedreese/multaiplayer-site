@@ -274,3 +274,20 @@ footer { padding: 72px clamp(24px, 6vw, 96px) 26px; background:#10100e;border-to
 }
 
 @media (prefers-reduced-motion: reduce) { html{scroll-behavior:auto}.button{transition:none} }
+
+.analytics-consent {
+  position:fixed;z-index:1000;right:18px;bottom:18px;left:18px;margin-left:auto;width:min(680px,calc(100% - 36px));padding:18px;
+  display:flex;align-items:center;justify-content:space-between;gap:22px;border:1px solid #4c493f;border-radius:10px;background:#171612;color:#f3f0e8;box-shadow:0 18px 60px rgba(0,0,0,.34)
+}
+.analytics-consent strong { display:block;margin-bottom:5px;font-size:14px }
+.analytics-consent p { margin:0;color:#b9b4aa;font-size:12px;line-height:1.5 }
+.analytics-consent a { color:#f0e5c8;border-bottom:1px solid #726a56 }
+.analytics-consent-actions { display:flex;flex:0 0 auto;gap:8px }
+.analytics-consent button,.analytics-choices { min-height:38px;padding:0 13px;border:1px solid #5a564c;border-radius:7px;background:transparent;color:#e5e1d8;cursor:pointer }
+.analytics-consent .analytics-consent-accept { border-color:#f3f0e8;background:#f3f0e8;color:#11110f;font-weight:700 }
+.analytics-choices { position:fixed;z-index:999;right:12px;bottom:12px;min-height:30px;padding:0 9px;background:#171612;color:#aaa59a;font-size:10px }
+
+@media (max-width:680px) {
+  .analytics-consent { align-items:stretch;flex-direction:column }
+  .analytics-consent-actions { justify-content:flex-end }
+}
