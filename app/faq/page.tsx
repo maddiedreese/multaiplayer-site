@@ -5,6 +5,7 @@ import { supportedMacDownload } from "../../lib/release-manifest";
 
 const githubUrl = "https://github.com/maddiedreese/multAIplayer";
 const docsUrl = `${githubUrl}/blob/main/docs`;
+const cliGuideUrl = `${githubUrl}/blob/main/apps/cli/README.md`;
 
 export const metadata: Metadata = {
   title: "FAQ | multAIplayer",
@@ -16,7 +17,17 @@ const faqs = [
   {
     category: "Product",
     question: "What is multAIplayer?",
-    answer: <p>A macOS desktop room where trusted teammates collaborate around one locally hosted Codex session. It combines discussion, intentionally shared project context, Codex activity, approvals, files and diffs, terminals, browser previews, Git/GitHub workflows, and explicit host handoff. Read the <a href={`${docsUrl}/using-the-app.md`}>user guide</a>.</p>,
+    answer: <p>Native macOS desktop and command-line clients where trusted teammates collaborate around one locally hosted Codex session. Both clients share encrypted rooms, conversation, Codex activity, approvals, and explicit host handoff. The desktop also provides files and diffs, shared terminals, browser previews, and Git/GitHub workflows. Read the <a href={`${docsUrl}/using-the-app.md`}>desktop guide</a> or <a href={cliGuideUrl}>CLI guide</a>.</p>,
+  },
+  {
+    category: "Product",
+    question: "How do I install and start using the CLI?",
+    answer: <><p>On an Apple-silicon Mac, run <code>curl -fsSL https://raw.githubusercontent.com/maddiedreese/multAIplayer/main/apps/cli/install.sh | sh</code>. The signed, notarized CLI installs in your user account without <code>sudo</code> or an administrator password.</p><p>Then run <code>multAIplayer auth login --open</code>. GitHub opens for device authorization, the terminal confirms your account, and the CLI prints a walkthrough covering room creation or joining, encrypted chat, Codex hosting, and host handoff. Replay it with <code>multAIplayer walkthrough</code>. See the <a href={cliGuideUrl}>CLI guide</a> for every command and current limitation.</p></>,
+  },
+  {
+    category: "Product",
+    question: "Does host handoff work between desktop and CLI?",
+    answer: <p>Yes. Either supported client can hand future host authority to a verified member through the same authenticated room boundary. The incoming host selects its own local project and uses its own credentials and Codex session. Handoff does not transfer filesystem access, credentials, running processes, terminal or browser sessions, or the outgoing host&apos;s Codex session.</p>,
   },
   {
     category: "Product",
@@ -56,7 +67,7 @@ const faqs = [
   {
     category: "Scope",
     question: "What platforms are supported?",
-    answer: <p>The public alpha targets Apple-silicon macOS 11 or later. Windows, Linux desktop, and Intel Mac releases are not supported. Current Codex compatibility is recorded in the <a href={`${docsUrl}/codex-hosting.md`}>Codex hosting guide</a>.</p>,
+    answer: <p>The public desktop and CLI alphas target Apple-silicon macOS 11 or later. Intel Mac, Windows, and Linux releases are not supported, and Homebrew packages are not currently available. Current Codex compatibility is recorded in the <a href={`${docsUrl}/codex-hosting.md`}>Codex hosting guide</a>; CLI-specific differences are listed in the <a href={`${cliGuideUrl}#compatibility-and-limitations`}>compatibility table</a>.</p>,
   },
   {
     category: "Scope",
@@ -75,7 +86,7 @@ export default function FaqPage() {
           <Image src="/brand/icon.png" alt="" width={34} height={34} priority />
           <span><strong>multAIplayer</strong><small>group chat for Codex</small></span>
         </Link>
-        <nav aria-label="FAQ navigation"><Link href="/">Home</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><a href={`${githubUrl}/blob/main/README.md`}>Documentation</a></nav>
+        <nav aria-label="FAQ navigation"><Link href="/">Home</Link><a href={cliGuideUrl}>CLI</a><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><a href={`${githubUrl}/blob/main/README.md`}>Documentation</a></nav>
         {supportedMacDownload ? <a className="header-cta" href={supportedMacDownload.url}>Download alpha</a> : <span className="header-cta release-unavailable" aria-disabled="true">Signed download pending</span>}
       </header>
 

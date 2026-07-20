@@ -10,13 +10,13 @@ const releaseDescription = releaseManifest.supported
 export const metadata: Metadata = {
   metadataBase: new URL("https://multaiplayer.com"),
   title: "multAIplayer | Build with Codex. Together.",
-  description: `A free, open-source team room for working with Codex. ${releaseDescription}`,
+  description: `Free, open-source desktop and CLI clients for working with Codex together. ${releaseDescription}`,
   applicationName: "multAIplayer",
   keywords: ["Codex", "collaboration", "pair programming", "AI coding", "developer tools"],
   alternates: { canonical: "/" },
   openGraph: {
     title: "multAIplayer | Build with Codex. Together.",
-    description: `Free, open-source group chat for coding with Codex. ${releaseDescription}`,
+    description: `Free, open-source desktop and CLI clients for coding with Codex together. ${releaseDescription}`,
     url: "https://multaiplayer.com",
     siteName: "multAIplayer",
     type: "website",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "multAIplayer | Build with Codex. Together.",
-    description: `Free, open-source group chat for coding with Codex. ${releaseDescription}`,
+    description: `Free, open-source desktop and CLI clients for coding with Codex together. ${releaseDescription}`,
     images: ["/og.png"],
   },
   icons: {

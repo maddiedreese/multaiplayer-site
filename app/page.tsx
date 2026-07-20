@@ -5,6 +5,8 @@ import { releaseManifest, supportedMacDownload } from "../lib/release-manifest";
 
 const githubUrl = "https://github.com/maddiedreese/multAIplayer";
 const websiteGithubUrl = "https://github.com/maddiedreese/multaiplayer-site";
+const cliGuideUrl = `${githubUrl}/blob/main/apps/cli/README.md`;
+const cliInstallCommand = "curl -fsSL https://raw.githubusercontent.com/maddiedreese/multAIplayer/main/apps/cli/install.sh | sh";
 
 const features = [
   {
@@ -68,6 +70,10 @@ const faqs = [
     a: "The alpha supports Apple silicon Macs running macOS 11 or later. Intel Macs, Windows, and Linux desktop packages are not supported.",
   },
   {
+    q: "Can I use multAIplayer from the terminal?",
+    a: "Yes. The signed Apple-silicon CLI uses the same encrypted rooms as the desktop app and supports GitHub sign-in, room creation and joining, chat, Codex hosting, and authenticated host handoff. Its installer and walkthrough are documented in the CLI guide.",
+  },
+  {
     q: "Is it ready for sensitive production work?",
     a: "No. This is experimental alpha software. Teams should review the threat model and known limitations before using private, regulated, or high-stakes projects.",
   },
@@ -90,6 +96,7 @@ export default function Home() {
         </a>
         <nav aria-label="Primary navigation">
           <a href="#how-it-works">How it works</a>
+          <a href="#cli">CLI</a>
           <Link href="/privacy">Privacy</Link>
           <a href="#open-source">Open source</a>
           <Link href="/faq">FAQ</Link>
@@ -131,6 +138,27 @@ export default function Home() {
           <div className="floating-card host-card"><span>Active host</span><strong>Avery</strong><i>approved</i></div>
           <div className="floating-card event-card"><span className="bot-mark">✣</span><div><strong>Codex is working</strong><small>3 teammates following</small></div></div>
         </div>
+      </section>
+
+      <section className="cli-section section-light" id="cli">
+        <div className="cli-copy">
+          <div className="section-kicker"><span>CLI</span> The same encrypted rooms, in your terminal</div>
+          <h2>Install once.<br />Start with a walkthrough.</h2>
+          <p>The signed, notarized Apple-silicon CLI installs in your user account without <code>sudo</code> or an administrator password.</p>
+          <div className="cli-command" aria-label="CLI installation command">
+            <span>$</span><code>{cliInstallCommand}</code>
+          </div>
+          <div className="cli-actions">
+            <a className="button button-cli-primary" href={cliGuideUrl}>Read the CLI guide <span>↗</span></a>
+            <a className="button button-cli-secondary" href={`${githubUrl}/releases/tag/cli-v0.1.0-alpha.13`}>CLI release <span>↗</span></a>
+          </div>
+        </div>
+        <ol className="cli-flow" aria-label="What happens after CLI installation">
+          <li><span>1</span><div><strong>Sign in with GitHub</strong><small>Run <code>multAIplayer auth login --open</code>. GitHub opens for device authorization, then the terminal confirms your account.</small></div></li>
+          <li><span>2</span><div><strong>Follow the terminal walkthrough</strong><small>The CLI explains how to create or join a room, chat, and host Codex. Replay it with <code>multAIplayer walkthrough</code>.</small></div></li>
+          <li><span>3</span><div><strong>Open the same rooms as desktop</strong><small>Create, invite, join, approve, and open rooms through the shared relay and MLS encryption boundary.</small></div></li>
+          <li><span>4</span><div><strong>Host—or hand hosting off</strong><small>Either supported client can transfer future host authority to a verified member. Projects, credentials, sessions, and processes never transfer.</small></div></li>
+        </ol>
       </section>
 
       <section className="intro section-light" id="how-it-works">
@@ -252,8 +280,8 @@ export default function Home() {
           <p>Made by <a href="https://x.com/maddiedreese">@maddiedreese ↗</a></p>
         </div>
         <div className="footer-links">
-          <div><strong>Product</strong><a href="#how-it-works">How it works</a><Link href="/faq">FAQ</Link>{supportedMacDownload ? <a href={supportedMacDownload.url}>Download</a> : <span className="release-unavailable">Signed download pending</span>}<Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div>
-          <div><strong>Project</strong><a href={githubUrl}>Application source</a><a href={websiteGithubUrl}>Website source</a><a href={`${githubUrl}/blob/main/docs/using-the-app.md`}>Documentation</a><a href={`${githubUrl}/issues`}>Issues</a></div>
+          <div><strong>Product</strong><a href="#how-it-works">How it works</a><a href="#cli">CLI install</a><Link href="/faq">FAQ</Link>{supportedMacDownload ? <a href={supportedMacDownload.url}>Desktop download</a> : <span className="release-unavailable">Signed download pending</span>}<Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div>
+          <div><strong>Project</strong><a href={githubUrl}>Application source</a><a href={websiteGithubUrl}>Website source</a><a href={`${githubUrl}/blob/main/docs/using-the-app.md`}>Desktop guide</a><a href={cliGuideUrl}>CLI guide</a><a href={`${githubUrl}/issues`}>Issues</a></div>
           <div><strong>Trust</strong><a href={`${githubUrl}/blob/main/SECURITY.md`}>Security</a><Link href="/security/updater-key">Updater key</Link><a href={`${githubUrl}/blob/main/docs/alpha-limitations.md`}>Alpha limitations</a><a href={`${githubUrl}/blob/main/docs/if-unmaintained.md`}>Project continuity</a><a href={`${githubUrl}/blob/main/LICENSE`}>License</a></div>
         </div>
         <p className="independence-note">multAIplayer is an independent open-source project and is not affiliated with, endorsed by, or sponsored by OpenAI. The OpenAI and Codex names belong to OpenAI.</p>
