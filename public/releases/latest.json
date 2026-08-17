@@ -1,14 +1,7 @@
 {
   "schemaVersion": 1,
   "releaseAssetSet": "macos-arm64-v1",
-  "version": "0.1.0-alpha.19",
-  "supported": true,
-  "downloads": {
-    "macos": {
-      "url": "https://github.com/maddiedreese/multAIplayer/releases/download/v0.1.0-alpha.19/multAIplayer_0.1.0-alpha.19_aarch64.dmg",
-      "name": "multAIplayer_0.1.0-alpha.19_aarch64.dmg",
-      "architecture": "arm64",
-      "digest": "sha256:38c5d8b4474e3760673ff265897d2e3e678c6061f1c18020d89bbb5d0c968049"
-    }
-  }
+  "version": "0.0.0",
+  "supported": false,
+  "downloads": {}
 }
